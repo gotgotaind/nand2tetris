@@ -15,5 +15,8 @@ CHIP RAM4K {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+		DMux(in=load,sel=address[0],a=load1,b=load2);
+		RAM2048(in=in,load=load1,address=address[1..11],out=reg1);
+		RAM2048(in=in,load=load2,address=address[1..11],out=reg2);
+		Mux16(a=reg1,b=reg2,sel=address[0],out=out);
 }
