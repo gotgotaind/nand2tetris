@@ -19,13 +19,16 @@
 	
 	@i
 	M=0
+	
 	@BLACK
-	M;JEQ
+	D;JNE
 	
 	@i
 	M=0
+	
 	@WHITE
-	M;JNE
+	D;JEQ
+	
 	@LOOP
 	0;JMP
 
@@ -34,15 +37,20 @@
 	D=A
 	@i
 	D=M-D
-	//D=D-8192
+
+	// Jump back to main loop if i>=8192
 	@LOOP
 	D;JGE
 	
 	@i
 	D=M
 	@SCREEN
-	A=M+D
+	A=A+D
 	M=-1
+	
+	@i
+	M=M+1
+	
 	@BLACK
 	0;JMP
 	
@@ -51,14 +59,19 @@
 	D=A
 	@i
 	D=M-D
-	//D=D-8192
+
+	// Jump back to main loop if i>=8192
 	@LOOP
 	D;JGE
 	
 	@i
 	D=M
 	@SCREEN
-	A=M+D
-	M=-1
+	A=A+D
+	M=0
+	
+	@i
+	M=M+1
+	
 	@WHITE
 	0;JMP
