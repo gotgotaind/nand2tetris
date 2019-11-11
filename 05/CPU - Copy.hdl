@@ -40,26 +40,26 @@ CHIP CPU {
 
     PARTS:
         // ARegMux
-        Mux16(a=ARegMuxi,b=instruction,sel=ARegMuxC,out=ARegMuxo);
+        Mux16(a=ARegMuxi,b=inM,sel=ARegMuxC,out=ARegMuxo);
         // AReg
-        ARegister(in=ARegMuxo,load=ARegC,out=ARego,out[0..14]=addressM);
+        ARegister(in=ARegMuxo,load=ARegC,out=ARego);
         // DReg
         DRegister(in=DRegMuxi,load=DRegC,out=DRego);
         // AMMux
         Mux16(a=ARego,b=inM,sel=AMMuxC,out=AMMuxo);
         // PC
-        PC(in=ARego,load=PCC,inc=true,reset=reset,out[0..14]=pc);
+        PC(in=ARego,load=PCC,inc=true,reset=reset,out[1..15]=pc);
         // ALU
         ALU(
             // IN
             x=DRego,
             y=AMMuxo,       
-            zx=instruction[11], // zero the x input?
-            nx=instruction[10], // negate the x input?
-            zy=instruction[9], // zero the y input?
-            ny=instruction[8], // negate the y input?
-            f=instruction[7],  // compute out = x + y (if 1) or x & y (if 0)
-            no=instruction[6], // negate the out output?
+            zx=instruction[4], // zero the x input?
+            nx=instruction[5], // negate the x input?
+            zy=instruction[6], // zero the y input?
+            ny=instruction[7], // negate the y input?
+            f=instruction[8],  // compute out = x + y (if 1) or x & y (if 0)
+            no=instruction[9], // negate the out output?
 
             // OUT 
             out=outM, // 16-bit output
@@ -69,18 +69,18 @@ CHIP CPU {
             ng=ng  // 1 if (out < 0),  0 otherwise
         );
         
-        Not(in=instruction[15],out=NotI0);
+        Not(in=instruction[0],out=NotI0);
         And(a=true,b=NotI0,out=ARegMuxC);
-        Or(a=NotI0,b=instruction[5],out=ARegC);
-        And(a=instruction[15],b=instruction[4],out=DRegC);
-        And(a=true,b=instruction[12],out=AMMuxC);
-        And(a=instruction[15],b=instruction[3],out=writeM);
+        Or(a=NotI0,b=instruction[10],out=ARegC);
+        And(a=instruction[0],b=instruction[11],out=DRegC);
+        And(a=true,b=instruction[3],out=AMMuxC);
+        And(a=instruction[0],b=instruction[12],out=writeM);
         // PCC
-        And(a=ng,b=instruction[2],out=negjump);
-        And(a=zr,b=instruction[1],out=zerojump);
+        And(a=ng,b=instruction[13],out=negjump);
+        And(a=zr,b=instruction[14],out=zerojump);
         Not(in=ng,out=notng);
-        And(a=notng,b=instruction[0],out=posjump);
+        And(a=notng,b=instruction[15],out=posjump);
         Or(a=negjump,b=zerojump,out=jump0);
         Or(a=jump0,b=posjump,out=jump);
-        And(a=instruction[15],b=jump,out=PCC);        
+        And(a=instruction[0],b=jump,out=PCC);        
 }
