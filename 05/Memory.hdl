@@ -27,5 +27,28 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+        RAM16K(
+            // IN
+            in=in,
+            load=loadR,
+            address=address[0..13],
+            // OUT
+            out=outR
+        );
+        Screen(
+            in=in,    // what to write
+            load=loadS,          // write-enable bit
+            address=address[0..12],   // where to read/write
+            out=outS   // Screen value at the given address
+        );
+        Keyboard(
+            out=outK // The ASCII code of the pressed key
+        );
+        
+        Mux16(a=outS,b=outK,sel=address[13],out=outSK);
+        Mux16(a=outR,b=outSK,sel=address[14],out=out);
+        
+        And(a=load,b=address[14],out=loadS);
+        Not(in=loadS,out=loadR0);
+        And(a=load,b=loadR0,out=loadR);
 }
