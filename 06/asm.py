@@ -4,7 +4,7 @@ import re
 path=sys.argv[1]
 code=[]
 
-compd={
+comp_d={
 "0":"0101010",
 "1":"0111111",
 "-1":"0111010",
@@ -35,7 +35,7 @@ compd={
 "D|M":"1010101"
 }
 
-destd={
+dest_d={
 "null":"000",
 "M":"001",
 "D":"010",
@@ -46,7 +46,7 @@ destd={
 "AMD":"111"
 }
 
-jumpd={
+jump_d={
 "null":"000",
 "JGT":"001",
 "JEQ":"010",
@@ -72,13 +72,28 @@ with open(path) as fp:
             line=m.group(1)
         code.append(line.strip())
         
-
-for line in code:
-    print("asm :"+line)
-    if re.match("^@(.*)",line):
-        m=re.match("^@(.*)",line)
-        addr=int(m.group(1))
-        print(f'{addr:016b}')
-    else:
-        if re.match("(.*)=(.*);(.*)\s*",line):
-            pass
+with open(path+".hack","w") as fo:
+    for line in code:
+        print("asm :"+line)
+        if re.match("^@(.*)",line):
+            m=re.match("^@(.*)",line)
+            addr=int(m.group(1))
+            print(f'{addr:016b}',file=fo)
+        else:
+            if re.match("(.*)=(.*);(.*)\s*",line):
+                m=re.match("(.*)=(.*);(.*)\s*",line)
+                dest_s=m.group(1)
+                comp_s=m.group(2)
+                jump_s=m.group(3)
+                print(f'111{comp_d[comp_s]}{dest_d[dest_s]}{jump_d[jump_s]}',file=fo)
+            elif re.match("(.*)=(.*)",line):
+                m=re.match("(.*)=(.*)",line)
+                dest_s=m.group(1)
+                comp_s=m.group(2)
+                print(f'111{comp_d[comp_s]}{dest_d[dest_s]}000',file=fo)
+            elif re.match("(.*);(.*)",line):
+                m=re.match("(.*);(.*)",line)
+                comp_s=m.group(1)
+                jump_s=m.group(2)
+                print(f'111{comp_d[comp_s]}000{jump_d[jump_s]}',file=fo)
+            
