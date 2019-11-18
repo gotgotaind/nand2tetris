@@ -57,6 +57,21 @@ jump_d={
 "JMP":"111"
 }
 
+symbol_d={
+"SP":0,
+"LCL":1,
+"ARG":2,
+"THIS":3,
+"THAT":4,
+"SCREEN":16384,
+"KBD":24576
+}
+
+for i in range(16):
+    symbol_d["R"+str(i)]=i
+
+    
+
 
 
 with open(path) as fp:
@@ -71,7 +86,61 @@ with open(path) as fp:
             m=re.match("(.*?)//.*",line)
             line=m.group(1)
         code.append(line.strip())
+
+# Print the asm file without comments
+with open(path+".nocomment","w") as fn:
+    for line in code:
+        print(line,file=fn)
+            
+# Find label definitions (SOMETHING), put their line number in the symbol table and remove the line
+isloop=True
+while isloop:    
+    isloop=False
+    for i,line in enumerate(code):
+        if(re.match("^\(",line)):
+            m=re.match("^\((.*)\)",line)
+            label=m.group(1)
+            symbol_d[label]=i
+            del code[i]
+            isloop=True
+            break
+    
+
+# Print the asm file without comments nor labels
+with open(path+".nocommentnorlabels","w") as fnl:
+    for line in code:
+        print(line,file=fnl)
+
+vars_d={}        
+# Find unknown @LABEL and add them as variables in the symbol table
+for i,line in enumerate(code):
+    if(re.match("^@\D",line)):
+        m=re.match("^@(.*)",line)
+        var=m.group(1)
+        if var in symbol_d.keys():
+            continue
+        else:
+            j=16
+            while True:
+                if j in vars_d.values():
+                    j=j+1
+                else:
+                    symbol_d[var]=j
+                    vars_d[var]=j
+                    break
+                    
+# Replace all @symbol with their values                    
+for i,line in enumerate(code):
+    if(re.match("^@\D",line)):
+        print(line)
+        m=re.match("^@(.*)",line)
+        var=m.group(1)
+        line="@"+str(symbol_d[var])
+        code[i]=line
+
+print(symbol_d)
         
+# Replace C instructions with their values
 with open(path+".hack","w") as fo:
     for line in code:
         print("asm :"+line)

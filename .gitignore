@@ -2,3 +2,5 @@
 *.out
 *.hack
 *.bin
+*.nocommentnorlabels
+*.nocomment
