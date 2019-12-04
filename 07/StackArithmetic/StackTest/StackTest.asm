@@ -1,0 +1,462 @@
+// line 1: // This file is part of www.nand2tetris.org
+// line 2: // and the book "The Elements of Computing Systems"
+// line 3: // by Nisan and Schocken, MIT Press.
+// line 4: // File name: projects/07/StackArithmetic/StackTest/StackTest.vm
+// line 5: 
+// line 6: // Executes a sequence of arithmetic and logical operations
+// line 7: // on the stack.
+// line 8: push constant 17
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 9: push constant 17
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 10: eq
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@EQTRUE9
+D;JEQ
+@EQFALSE9
+D;JNE
+(EQTRUE9)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+    @EQEND9
+    0;JMP
+(EQFALSE9)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+(EQEND9)
+// line 11: push constant 17
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 12: push constant 16
+@16
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 13: eq
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@EQTRUE12
+D;JEQ
+@EQFALSE12
+D;JNE
+(EQTRUE12)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+    @EQEND12
+    0;JMP
+(EQFALSE12)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+(EQEND12)
+// line 14: push constant 16
+@16
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 15: push constant 17
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 16: eq
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@EQTRUE15
+D;JEQ
+@EQFALSE15
+D;JNE
+(EQTRUE15)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+    @EQEND15
+    0;JMP
+(EQFALSE15)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+(EQEND15)
+// line 17: push constant 892
+@892
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 18: push constant 891
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 19: lt
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@TRUE18
+D;JLE
+@FALSE18
+D;JGT
+(TRUE18)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+    @END18
+    0;JMP
+(FALSE18)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+(END18)
+// line 20: push constant 891
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 21: push constant 892
+@892
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 22: lt
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@TRUE21
+D;JLE
+@FALSE21
+D;JGT
+(TRUE21)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+    @END21
+    0;JMP
+(FALSE21)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+(END21)
+// line 23: push constant 891
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 24: push constant 891
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 25: lt
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@TRUE24
+D;JLE
+@FALSE24
+D;JGT
+(TRUE24)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+    @END24
+    0;JMP
+(FALSE24)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+(END24)
+// line 26: push constant 32767
+@32767
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 27: push constant 32766
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 28: gt
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@TRUE27
+D;JGE
+@FALSE27
+D;JLT
+(TRUE27)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+    @END27
+    0;JMP
+(FALSE27)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+(END27)
+// line 29: push constant 32766
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 30: push constant 32767
+@32767
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 31: gt
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@TRUE30
+D;JGE
+@FALSE30
+D;JLT
+(TRUE30)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+    @END30
+    0;JMP
+(FALSE30)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+(END30)
+// line 32: push constant 32766
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 33: push constant 32766
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 34: gt
+@SP
+A=M-1
+D=M
+A=A-1
+D=D-M
+@TRUE33
+D;JGE
+@FALSE33
+D;JLT
+(TRUE33)
+    @SP
+    AM=M-1
+    A=A-1
+    M=0
+    @END33
+    0;JMP
+(FALSE33)
+    @SP
+    AM=M-1
+    A=A-1
+    M=-1
+(END33)
+// line 35: push constant 57
+@57
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 36: push constant 31
+@31
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 37: push constant 53
+@53
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 38: add
+@SP
+A=M-1
+D=M
+A=A-1
+D=M+D
+@SP
+M=M-1
+M=M-1
+A=M
+M=D
+@SP
+M=M+1
+// line 39: push constant 112
+@112
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 40: sub
+@SP
+A=M-1
+D=M
+A=A-1
+D=M-D
+@SP
+M=M-1
+M=M-1
+A=M
+M=D
+@SP
+M=M+1
+// line 41: neg
+@SP
+A=M-1
+D=M
+D=-D
+M=D
+// line 42: and
+@SP
+A=M-1
+D=M
+A=A-1
+D=D&M
+@SP
+M=M-1
+M=M-1
+A=M
+M=D
+@SP
+M=M+1
+// line 43: push constant 82
+@82
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// line 44: or
+@SP
+A=M-1
+D=M
+A=A-1
+D=D|M
+@SP
+M=M-1
+M=M-1
+A=M
+M=D
+@SP
+M=M+1
+// line 45: not
+@SP
+A=M-1
+D=M
+D=!D
+M=D
