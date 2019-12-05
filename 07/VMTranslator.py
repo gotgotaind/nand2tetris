@@ -11,6 +11,15 @@ path=sys.argv[1]
 opath=notext+'.asm'
 print(opath)
 
+segments_d={
+"local":"LCL",
+"argument":"ARG",
+"this":"THIS",
+"that":"THAT",
+"temp":"TEMP"
+}
+
+
 def out(str):
     ocode.append(str)
 
@@ -40,18 +49,42 @@ with open(path) as fp:
             m=re.match("(.*?)//.*",line)
             line=m.group(1)
             
-        # push constant x
-        reg="push\s+constant\s+(\d+)"
+        # push segment x
+        reg="push\s+(\S+)\s+(\d+)"
         match = re.search(reg,line)
         if match:
-            value = match.group(1)
-            out(f'@{value}')
-            out('D=A')
+            segment = match.group(1)
+            value = match.group(2)
+            if ( segment == "constant" ):
+                out(f'@{value}')
+                out('D=A')
+            else:
+                out(f'@{segments_d[segment]}')
+                out('A=M')
+                out('D=M')
+                out(f'@{value}')
+                out('A=D+A')
+                out('D=M')                
             out('@SP')
             out('A=M')
             out('M=D')
             out('@SP')
             out('M=M+1')
+
+        # pop segment x
+        reg="pop\s+(\S+)\s+(\d+)"
+        match = re.search(reg,line)
+        if match:
+            segment = match.group(1)
+            value = match.group(2)
+            out(f'''
+@SP
+AM=M-1
+D+M
+@{segments_d[segment]}
+A=M
+M=D''')
+            
         # add
         reg="add"
         match = re.search(reg,line)
