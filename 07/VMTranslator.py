@@ -58,6 +58,9 @@ with open(path) as fp:
             if ( segment == "constant" ):
                 out(f'@{value}')
                 out('D=A')
+            elif ( segment == "temp" ):
+                out(f'@{5+int(value)} // temp starts at 5')
+                out('D=M')                     
             else:
                 out(f'@{segments_d[segment]}')
                 out('A=M')
@@ -77,13 +80,35 @@ with open(path) as fp:
         if match:
             segment = match.group(1)
             value = match.group(2)
-            out(f'''
+            if ( segment == "temp" ):
+                
+                out(f'''
+@{5+int(value)}
+D=A // D is now temp+value
 @SP
-AM=M-1
-D+M
+A=M-1
+A=M // A has now the value of memory at mem(SP-1)
+D=D+A // this is to swap A and D
+A=D-A
+D=D-A // A and D are now swapped
+M=D
+@SP // this just decrements SP
+M=M-1''')
+            else:
+                 out(f'''
 @{segments_d[segment]}
-A=M
-M=D''')
+D=M
+@{value}
+D=D+A // D is now @segment+value
+@SP
+A=M-1
+A=M // A has now the value of memory at mem(SP-1)
+D=D+A // this is to swap A and D
+A=D-A
+D=D-A // A and D are now swapped
+M=D
+@SP // this just decrements SP
+M=M-1''')           
             
         # add
         reg="add"
