@@ -9,6 +9,7 @@ path=sys.argv[1]
 
 [notext,ext]=os.path.splitext(path)
 opath=notext+'.asm'
+opath_nocomment=notext+'.nocomment.asm'
 print(opath)
 
 segments_d={
@@ -60,7 +61,16 @@ with open(path) as fp:
                 out('D=A')
             elif ( segment == "temp" ):
                 out(f'@{5+int(value)} // temp starts at 5')
-                out('D=M')                     
+                out('D=M')
+            elif( segment == 'pointer' ):
+                out(f'''@THIS
+A=A+{value}
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1''')
             else:
                 out(f'@{segments_d[segment]}')
                 out('D=M')
@@ -93,6 +103,14 @@ D=D-A // A and D are now swapped
 M=D
 @SP // this just decrements SP
 M=M-1''')
+            elif( segment == 'pointer' ):
+                out(f'''@SP
+A=M
+AM=M-1
+D=M
+@THIS
+A=A+{value}
+M=D''')
             else:
                  out(f'''
 @{segments_d[segment]}
@@ -287,3 +305,13 @@ with open(opath,"w") as fnl:
     for line in ocode:
         print(line,file=fnl)
         print(line)
+
+# Print the asm without comment line
+with open(opath_nocomment,"w") as fnl:
+
+    for line in ocode:
+        match_comment = re.match('^//',line)
+        match_empty = re.match('^.\s$',line)
+        if ( not ( match_comment or match_empty ) ):
+            print(line,file=fnl)
+            print(line)
