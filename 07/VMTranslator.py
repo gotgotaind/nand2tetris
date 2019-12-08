@@ -63,7 +63,6 @@ with open(path) as fp:
                 out('D=M')                     
             else:
                 out(f'@{segments_d[segment]}')
-                out('A=M')
                 out('D=M')
                 out(f'@{value}')
                 out('A=D+A')

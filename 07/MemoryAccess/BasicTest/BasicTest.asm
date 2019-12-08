@@ -165,7 +165,6 @@ M=D
 M=M-1
 // line 21: push local 0
 @LCL
-A=M
 D=M
 @0
 A=D+A
@@ -177,7 +176,6 @@ M=D
 M=M+1
 // line 22: push that 5
 @THAT
-A=M
 D=M
 @5
 A=D+A
@@ -202,7 +200,6 @@ M=D
 M=M+1
 // line 24: push argument 1
 @ARG
-A=M
 D=M
 @1
 A=D+A
@@ -227,7 +224,6 @@ M=D
 M=M+1
 // line 26: push this 6
 @THIS
-A=M
 D=M
 @6
 A=D+A
@@ -239,7 +235,6 @@ M=D
 M=M+1
 // line 27: push this 6
 @THIS
-A=M
 D=M
 @6
 A=D+A
