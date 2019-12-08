@@ -63,14 +63,11 @@ with open(path) as fp:
                 out(f'@{5+int(value)} // temp starts at 5')
                 out('D=M')
             elif( segment == 'pointer' ):
-                out(f'''@THIS
-A=A+{value}
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1''')
+                if ( value == '0' ):
+                    out('@THIS')
+                else:
+                    out('@THAT')
+                out('D=M')
             else:
                 out(f'@{segments_d[segment]}')
                 out('D=M')
@@ -104,13 +101,14 @@ M=D
 @SP // this just decrements SP
 M=M-1''')
             elif( segment == 'pointer' ):
-                out(f'''@SP
-A=M
-AM=M-1
-D=M
-@THIS
-A=A+{value}
-M=D''')
+                out(f'@SP')
+                out('AM=M-1')
+                out('D=M')
+                if( value == '0' ):
+                    out('@THIS')
+                else:
+                    out('@THAT')
+                out('M=D')
             else:
                  out(f'''
 @{segments_d[segment]}

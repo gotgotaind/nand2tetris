@@ -15,11 +15,9 @@ M=D
 M=M+1
 // line 9: pop pointer 0
 @SP
-A=M
 AM=M-1
 D=M
 @THIS
-A=A+0
 M=D
 // line 10: push constant 3040
 @3040
@@ -31,11 +29,9 @@ M=D
 M=M+1
 // line 11: pop pointer 1
 @SP
-A=M
 AM=M-1
 D=M
-@THIS
-A=A+1
+@THAT
 M=D
 // line 12: push constant 32
 @32
@@ -85,27 +81,15 @@ M=D
 M=M-1
 // line 16: push pointer 0
 @THIS
-A=A+0
 D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
 @SP
 A=M
 M=D
 @SP
 M=M+1
 // line 17: push pointer 1
-@THIS
-A=A+1
+@THAT
 D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
 @SP
 A=M
 M=D
