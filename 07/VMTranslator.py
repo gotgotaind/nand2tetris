@@ -6,7 +6,7 @@ icode=[]
 ocode=[]
 
 path=sys.argv[1]
-
+basename=os.path.basename(path)
 [notext,ext]=os.path.splitext(path)
 opath=notext+'.asm'
 opath_nocomment=notext+'.nocomment.asm'
@@ -68,6 +68,9 @@ with open(path) as fp:
                 else:
                     out('@THAT')
                 out('D=M')
+            elif( segment == 'static' ):
+                out(f'@{basename}.{value}')
+                out('D=M')
             else:
                 out(f'@{segments_d[segment]}')
                 out('D=M')
@@ -108,6 +111,12 @@ M=M-1''')
                     out('@THIS')
                 else:
                     out('@THAT')
+                out('M=D')
+            elif( segment == 'static' ):
+                out(f'@SP')
+                out('AM=M-1')
+                out('D=M')
+                out(f'@{basename}.{value}')
                 out('M=D')
             else:
                  out(f'''
