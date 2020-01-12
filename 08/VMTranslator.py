@@ -59,6 +59,10 @@ for file in files_list:
             icode.append(line.strip())
             
     with open(file) as fp:
+        [notext,ext]=os.path.splitext(file)
+        vm_file_name=os.path.basename(notext)
+        function=''
+        
         for i,line in enumerate(fp):
         #for i,line in enumerate(icode):
             out(f'// line {i+1}: {line.strip()}')
@@ -71,7 +75,33 @@ for file in files_list:
             if( re.match(".*?//",line) ):
                 m=re.match("(.*?)//.*",line)
                 line=m.group(1)
-                
+            
+            #label
+            reg="label\s+(\S+)"
+            match=re.search(reg,line)
+            if match:
+                label=match.group(1)
+                out(f'({vm_file_name}${function}${label})')
+
+            #goto
+            reg="goto\s+(\S+)"
+            match=re.search(reg,line)
+            if match:
+                label=match.group(1)
+                out(f'@{vm_file_name}${function}${label}')
+                out(f'0;JMP')
+             
+            #goto
+            reg="if-goto\s+(\S+)"
+            match=re.search(reg,line)
+            if match:
+                label=match.group(1)
+                out('@SP')
+                out('AM=M-1')
+                out('D=M')
+                out(f'@{vm_file_name}${function}${label}')
+                out(f'D;JNE')
+            
             # push segment x
             reg="push\s+(\S+)\s+(\d+)"
             match = re.search(reg,line)
