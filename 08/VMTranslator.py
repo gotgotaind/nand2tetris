@@ -75,7 +75,21 @@ for file in files_list:
             if( re.match(".*?//",line) ):
                 m=re.match("(.*?)//.*",line)
                 line=m.group(1)
-            
+
+            #function declaration
+            reg="function\s+(\S+)\s+(\d+)"
+            match=re.search(reg,line)
+            if match:
+                function=match.group(1)
+                k=int(match.group(2)) # number of local variables
+                out(f'({vm_file_name}${function})')
+                for i in range(k):
+                    out('@SP')
+                    out('A=M')
+                    out('M=0')
+                    out('@SP')
+                    out('M=M+1')
+                
             #label
             reg="label\s+(\S+)"
             match=re.search(reg,line)
