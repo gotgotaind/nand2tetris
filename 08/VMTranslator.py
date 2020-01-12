@@ -84,7 +84,7 @@ for file in files_list:
                 out(f'({vm_file_name}${function}${label})')
 
             #goto
-            reg="goto\s+(\S+)"
+            reg="^goto\s+(\S+)"
             match=re.search(reg,line)
             if match:
                 label=match.group(1)
@@ -92,7 +92,7 @@ for file in files_list:
                 out(f'0;JMP')
              
             #goto
-            reg="if-goto\s+(\S+)"
+            reg="^if-goto\s+(\S+)"
             match=re.search(reg,line)
             if match:
                 label=match.group(1)

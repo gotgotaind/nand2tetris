@@ -140,8 +140,6 @@ M=D
 @SP
 M=M+1
 // line 21: if-goto LOOP_START  // If counter > 0, goto LOOP_START
-@BasicLoop$$LOOP_START
-0;JMP
 @SP
 AM=M-1
 D=M
