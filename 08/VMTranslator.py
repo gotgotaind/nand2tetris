@@ -89,6 +89,72 @@ for file in files_list:
                     out('M=0')
                     out('@SP')
                     out('M=M+1')
+                    
+            #return
+            reg="^return$"
+            match=re.search(reg,line)
+            if match:
+                out('//FRAME=R13=LCL')
+                out('@LCL')
+                out('D=M')
+                out('@R13')
+                out('M=D')
+                out('//R14=RET=*(FRAME-5)')
+                out('@R13')
+                out('D=M')
+                out('@5')
+                out('D=D-A')
+                out('@R14')
+                out('M=D')
+                out('//*arg=pop()')
+                out('@SP')
+                out('A=M-1')
+                out('D=M')
+                out('@ARG')
+                out('A=M')
+                out('M=D')
+                out('//SP=ARG+1')
+                out('@ARG')
+                out('D=M+1')
+                out('@SP')
+                out('M=D')
+                out('//THAT=*(FRAME-1)')
+                out('@R13')
+                out('A=M-1')
+                out('D=M')
+                out('@THAT')
+                out('M=D')
+                out('//THIS=*(FRAME-2)')
+                out('@R13')
+                out('D=M')
+                out('@2')
+                out('D=D-A')
+                out('A=D')
+                out('D=M')
+                out('@THIS')
+                out('M=D')                
+                out('//ARG=*(FRAME-3)')
+                out('@R13')
+                out('D=M')
+                out('@3')
+                out('D=D-A')
+                out('A=D')
+                out('D=M')
+                out('@ARG')
+                out('M=D')
+                out('//LCL=*(FRAME-4)')
+                out('@R13')
+                out('D=M')
+                out('@4')
+                out('D=D-A')
+                out('A=D')
+                out('D=M')
+                out('@LCL')
+                out('M=D')
+                out('//goto RET')
+                out('@R14')
+                out('A=M')
+                out('0;JMP')
                 
             #label
             reg="label\s+(\S+)"
@@ -375,9 +441,13 @@ D;JLT
             
 # Print the asm
 with open(opath,"w") as fnl:
+    machine_code_line=0
     for line in ocode:
+        line=line+f'    //{machine_code_line}'
         print(line,file=fnl)
         print(line)
+        if( not (re.search('^//',line) or re.search('^\(',line) ) ):
+            machine_code_line=machine_code_line+1
 
 # Print the asm without comment line
 with open(opath_nocomment,"w") as fnl:
