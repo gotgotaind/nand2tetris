@@ -45,6 +45,13 @@ segments_d={
 "temp":"TEMP"
 }
 
+def push_D_to_stack():
+    out('@SP')
+    out('A=M')
+    out('M=D')
+    out('@SP')
+    out('M=M+1') 
+
 for file in files_list:
     icode=[]
     with open(file) as fp:
@@ -57,11 +64,25 @@ for file in files_list:
                 m=re.match("(.*?)//.*",line)
                 line=m.group(1)
             icode.append(line.strip())
-            
+
+
+    out('//Bootstrap code')
+    out('//SP=256')
+    out('@256')
+    out('D=A')
+    out('@SP')
+    out('M=D')
+    out('//call Sys.init')
+    out('@Sys.init')
+    out('0;JMP')
+        
     with open(file) as fp:
         [notext,ext]=os.path.splitext(file)
         vm_file_name=os.path.basename(notext)
         function=''
+        
+
+        
         
         for i,line in enumerate(fp):
         #for i,line in enumerate(icode):
@@ -75,7 +96,56 @@ for file in files_list:
             if( re.match(".*?//",line) ):
                 m=re.match("(.*?)//.*",line)
                 line=m.group(1)
+                
+            #call
+            reg="call\s+(\S+)\s+(\d+)"
+            match=re.search(reg,line)
+            if match:
+                function=match.group(1)
+                n=int(match.group(2)) # number of arguments
+                out('//push return-address')
+                out(f'@{vm_file_name}${function}$return-address')
+                out('D=A')
+                push_D_to_stack()
+                out('//push LCL')
+                out('@LCL')
+                out('D=M')
+                push_D_to_stack()
+                out('//push ARG')
+                out('@ARG')
+                out('D=M')
+                push_D_to_stack()                
+                out('//push THIS')
+                out('@THIS')
+                out('D=M')
+                push_D_to_stack()                     
+                out('//push THAT')
+                out('@THAT')
+                out('D=M')
+                push_D_to_stack()
+                out('//ARG = SP-n-5')
+                out('@SP')
+                out('D=M')
+                out(f'@{n}')
+                out('D=D-A')
+                out('@5')
+                out('D=D-A')
+                out('@ARG')
+                out('M=D')
+                out('//LCL = SP')
+                out('@SP')
+                out('D=M')
+                out('@LCL')
+                out('M=D')
+                out('//goto f')
+                out(f'@{vm_file_name}${function}')
+                out('0;JMP')
+                out('//(return-address)')
+                out(f'({vm_file_name}${function}$return-address)')
 
+                
+                
+                
             #function declaration
             reg="function\s+(\S+)\s+(\d+)"
             match=re.search(reg,line)
@@ -443,7 +513,7 @@ D;JLT
 with open(opath,"w") as fnl:
     machine_code_line=0
     for line in ocode:
-        line=line+f'    //{machine_code_line}'
+        line=line+f'    // cpu emulator line {machine_code_line}'
         print(line,file=fnl)
         print(line)
         if( not (re.search('^//',line) or re.search('^\(',line) ) ):
