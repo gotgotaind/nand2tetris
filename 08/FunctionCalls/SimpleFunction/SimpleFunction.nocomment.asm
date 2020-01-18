@@ -1,4 +1,4 @@
-(SimpleFunction$SimpleFunction.test)
+($SimpleFunction.test)
 @SP
 A=M
 M=0

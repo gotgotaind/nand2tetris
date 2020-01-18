@@ -50,7 +50,48 @@ def push_D_to_stack():
     out('A=M')
     out('M=D')
     out('@SP')
-    out('M=M+1') 
+    out('M=M+1')
+
+def call(function,n):    
+    out('//push return-address')
+    out(f'@${function}$return-address')
+    out('D=A')
+    push_D_to_stack()
+    out('//push LCL')
+    out('@LCL')
+    out('D=M')
+    push_D_to_stack()
+    out('//push ARG')
+    out('@ARG')
+    out('D=M')
+    push_D_to_stack()                
+    out('//push THIS')
+    out('@THIS')
+    out('D=M')
+    push_D_to_stack()                     
+    out('//push THAT')
+    out('@THAT')
+    out('D=M')
+    push_D_to_stack()
+    out('//ARG = SP-n-5')
+    out('@SP')
+    out('D=M')
+    out(f'@{n}')
+    out('D=D-A')
+    out('@5')
+    out('D=D-A')
+    out('@ARG')
+    out('M=D')
+    out('//LCL = SP')
+    out('@SP')
+    out('D=M')
+    out('@LCL')
+    out('M=D')
+    out('//goto f')
+    out(f'@${function}')
+    out('0;JMP')
+    out('//(return-address)')
+    out(f'(${function}$return-address)')
 
 for file in files_list:
     icode=[]
@@ -73,8 +114,7 @@ for file in files_list:
     out('@SP')
     out('M=D')
     out('//call Sys.init')
-    out('@Sys.init')
-    out('0;JMP')
+    call('Sys.init',0)
         
     with open(file) as fp:
         [notext,ext]=os.path.splitext(file)
@@ -103,45 +143,8 @@ for file in files_list:
             if match:
                 function=match.group(1)
                 n=int(match.group(2)) # number of arguments
-                out('//push return-address')
-                out(f'@{vm_file_name}${function}$return-address')
-                out('D=A')
-                push_D_to_stack()
-                out('//push LCL')
-                out('@LCL')
-                out('D=M')
-                push_D_to_stack()
-                out('//push ARG')
-                out('@ARG')
-                out('D=M')
-                push_D_to_stack()                
-                out('//push THIS')
-                out('@THIS')
-                out('D=M')
-                push_D_to_stack()                     
-                out('//push THAT')
-                out('@THAT')
-                out('D=M')
-                push_D_to_stack()
-                out('//ARG = SP-n-5')
-                out('@SP')
-                out('D=M')
-                out(f'@{n}')
-                out('D=D-A')
-                out('@5')
-                out('D=D-A')
-                out('@ARG')
-                out('M=D')
-                out('//LCL = SP')
-                out('@SP')
-                out('D=M')
-                out('@LCL')
-                out('M=D')
-                out('//goto f')
-                out(f'@{vm_file_name}${function}')
-                out('0;JMP')
-                out('//(return-address)')
-                out(f'({vm_file_name}${function}$return-address)')
+                call(function,n)
+
 
                 
                 
@@ -152,7 +155,7 @@ for file in files_list:
             if match:
                 function=match.group(1)
                 k=int(match.group(2)) # number of local variables
-                out(f'({vm_file_name}${function})')
+                out(f'(${function})')
                 for i in range(k):
                     out('@SP')
                     out('A=M')
@@ -173,7 +176,8 @@ for file in files_list:
                 out('@R13')
                 out('D=M')
                 out('@5')
-                out('D=D-A')
+                out('A=D-A')
+                out('D=M')
                 out('@R14')
                 out('M=D')
                 out('//*arg=pop()')
@@ -231,14 +235,14 @@ for file in files_list:
             match=re.search(reg,line)
             if match:
                 label=match.group(1)
-                out(f'({vm_file_name}${function}${label})')
+                out(f'(${function}${label})')
 
             #goto
             reg="^goto\s+(\S+)"
             match=re.search(reg,line)
             if match:
                 label=match.group(1)
-                out(f'@{vm_file_name}${function}${label}')
+                out(f'@${function}${label}')
                 out(f'0;JMP')
              
             #goto
@@ -249,7 +253,7 @@ for file in files_list:
                 out('@SP')
                 out('AM=M-1')
                 out('D=M')
-                out(f'@{vm_file_name}${function}${label}')
+                out(f'@${function}${label}')
                 out(f'D;JNE')
             
             # push segment x
@@ -512,19 +516,12 @@ D;JLT
 # Print the asm
 with open(opath,"w") as fnl:
     machine_code_line=0
-    for line in ocode:
-        line=line+f'    // cpu emulator line {machine_code_line}'
-        print(line,file=fnl)
-        print(line)
-        if( not (re.search('^//',line) or re.search('^\(',line) ) ):
-            machine_code_line=machine_code_line+1
-
-# Print the asm without comment line
-with open(opath_nocomment,"w") as fnl:
-
-    for line in ocode:
-        match_comment = re.match('^//',line)
-        match_empty = re.match('^.\s$',line)
-        if ( not ( match_comment or match_empty ) ):
+    for aline in ocode:
+        # some lines are in fact multiple line
+        # have to split them so that the cpu emulator counter is right
+        for line in aline.split("\n"):
+            line=line+f'    // cpu emulator line {machine_code_line}'
             print(line,file=fnl)
             print(line)
+            if( not (re.search('^//',line) or re.search('^\(',line) ) ):
+                machine_code_line=machine_code_line+1
