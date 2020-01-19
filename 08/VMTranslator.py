@@ -52,9 +52,9 @@ def push_D_to_stack():
     out('@SP')
     out('M=M+1')
 
-def call(function,n):    
+def call(vm_file_name,i,function,n):    
     out('//push return-address')
-    out(f'@${function}$return-address')
+    out(f'@{vm_file_name}.vm:{i+1}${function}$return-address')
     out('D=A')
     push_D_to_stack()
     out('//push LCL')
@@ -91,7 +91,7 @@ def call(function,n):
     out(f'@${function}')
     out('0;JMP')
     out('//(return-address)')
-    out(f'(${function}$return-address)')
+    out(f'({vm_file_name}.vm:{i+1}${function}$return-address)')
 
 for file in files_list:
     icode=[]
@@ -114,7 +114,7 @@ for file in files_list:
     out('@SP')
     out('M=D')
     out('//call Sys.init')
-    call('Sys.init',0)
+    call('Main',0,'Sys.init',0)
         
     with open(file) as fp:
         [notext,ext]=os.path.splitext(file)
@@ -126,7 +126,7 @@ for file in files_list:
         
         for i,line in enumerate(fp):
         #for i,line in enumerate(icode):
-            out(f'// line {i+1}: {line.strip()}')
+            out(f'// {vm_file_name}.vm:{i+1}: {line.strip()}')
             
             # don't parse empty lines, and lines with only comments
             if ( re.match("^$",line) or re.match("^//",line)):
@@ -143,7 +143,7 @@ for file in files_list:
             if match:
                 function=match.group(1)
                 n=int(match.group(2)) # number of arguments
-                call(function,n)
+                call(vm_file_name,i,function,n)
 
 
                 

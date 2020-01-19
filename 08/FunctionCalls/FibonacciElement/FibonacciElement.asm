@@ -6,7 +6,7 @@ D=A    // cpu emulator line 1
 M=D    // cpu emulator line 3
 //call Sys.init    // cpu emulator line 4
 //push return-address    // cpu emulator line 4
-@$Sys.init$return-address    // cpu emulator line 4
+@Main.vm:1$Sys.init$return-address    // cpu emulator line 4
 D=A    // cpu emulator line 5
 @SP    // cpu emulator line 6
 A=M    // cpu emulator line 7
@@ -63,20 +63,20 @@ M=D    // cpu emulator line 50
 @$Sys.init    // cpu emulator line 51
 0;JMP    // cpu emulator line 52
 //(return-address)    // cpu emulator line 53
-($Sys.init$return-address)    // cpu emulator line 53
-// line 1: // This file is part of www.nand2tetris.org    // cpu emulator line 53
-// line 2: // and the book "The Elements of Computing Systems"    // cpu emulator line 53
-// line 3: // by Nisan and Schocken, MIT Press.    // cpu emulator line 53
-// line 4: // File name: projects/08/FunctionCalls/FibonacciElement/Main.vm    // cpu emulator line 53
-// line 5:     // cpu emulator line 53
-// line 6: // Computes the n'th element of the Fibonacci series, recursively.    // cpu emulator line 53
-// line 7: // n is given in argument[0].  Called by the Sys.init function    // cpu emulator line 53
-// line 8: // (part of the Sys.vm file), which also pushes the argument[0]    // cpu emulator line 53
-// line 9: // parameter before this code starts running.    // cpu emulator line 53
-// line 10:     // cpu emulator line 53
-// line 11: function Main.fibonacci 0    // cpu emulator line 53
+(Main.vm:1$Sys.init$return-address)    // cpu emulator line 53
+// Main.vm:1: // This file is part of www.nand2tetris.org    // cpu emulator line 53
+// Main.vm:2: // and the book "The Elements of Computing Systems"    // cpu emulator line 53
+// Main.vm:3: // by Nisan and Schocken, MIT Press.    // cpu emulator line 53
+// Main.vm:4: // File name: projects/08/FunctionCalls/FibonacciElement/Main.vm    // cpu emulator line 53
+// Main.vm:5:     // cpu emulator line 53
+// Main.vm:6: // Computes the n'th element of the Fibonacci series, recursively.    // cpu emulator line 53
+// Main.vm:7: // n is given in argument[0].  Called by the Sys.init function    // cpu emulator line 53
+// Main.vm:8: // (part of the Sys.vm file), which also pushes the argument[0]    // cpu emulator line 53
+// Main.vm:9: // parameter before this code starts running.    // cpu emulator line 53
+// Main.vm:10:     // cpu emulator line 53
+// Main.vm:11: function Main.fibonacci 0    // cpu emulator line 53
 ($Main.fibonacci)    // cpu emulator line 53
-// line 12: push argument 0    // cpu emulator line 53
+// Main.vm:12: push argument 0    // cpu emulator line 53
 @ARG    // cpu emulator line 53
 D=M    // cpu emulator line 54
 @0    // cpu emulator line 55
@@ -87,7 +87,7 @@ A=M    // cpu emulator line 59
 M=D    // cpu emulator line 60
 @SP    // cpu emulator line 61
 M=M+1    // cpu emulator line 62
-// line 13: push constant 2    // cpu emulator line 63
+// Main.vm:13: push constant 2    // cpu emulator line 63
 @2    // cpu emulator line 63
 D=A    // cpu emulator line 64
 @SP    // cpu emulator line 65
@@ -95,7 +95,7 @@ A=M    // cpu emulator line 66
 M=D    // cpu emulator line 67
 @SP    // cpu emulator line 68
 M=M+1    // cpu emulator line 69
-// line 14: lt                     // checks if n<2    // cpu emulator line 70
+// Main.vm:14: lt                     // checks if n<2    // cpu emulator line 70
 @SP    // cpu emulator line 70
 A=M-1    // cpu emulator line 71
 D=M    // cpu emulator line 72
@@ -118,18 +118,18 @@ D;JGT    // cpu emulator line 78
     A=A-1    // cpu emulator line 87
     M=-1    // cpu emulator line 88
 (END13)    // cpu emulator line 89
-// line 15: if-goto IF_TRUE    // cpu emulator line 89
+// Main.vm:15: if-goto IF_TRUE    // cpu emulator line 89
 @SP    // cpu emulator line 89
 AM=M-1    // cpu emulator line 90
 D=M    // cpu emulator line 91
 @$Main.fibonacci$IF_TRUE    // cpu emulator line 92
 D;JNE    // cpu emulator line 93
-// line 16: goto IF_FALSE    // cpu emulator line 94
+// Main.vm:16: goto IF_FALSE    // cpu emulator line 94
 @$Main.fibonacci$IF_FALSE    // cpu emulator line 94
 0;JMP    // cpu emulator line 95
-// line 17: label IF_TRUE          // if n<2, return n    // cpu emulator line 96
+// Main.vm:17: label IF_TRUE          // if n<2, return n    // cpu emulator line 96
 ($Main.fibonacci$IF_TRUE)    // cpu emulator line 96
-// line 18: push argument 0    // cpu emulator line 96
+// Main.vm:18: push argument 0    // cpu emulator line 96
 @ARG    // cpu emulator line 96
 D=M    // cpu emulator line 97
 @0    // cpu emulator line 98
@@ -140,7 +140,7 @@ A=M    // cpu emulator line 102
 M=D    // cpu emulator line 103
 @SP    // cpu emulator line 104
 M=M+1    // cpu emulator line 105
-// line 19: return    // cpu emulator line 106
+// Main.vm:19: return    // cpu emulator line 106
 //FRAME=R13=LCL    // cpu emulator line 106
 @LCL    // cpu emulator line 106
 D=M    // cpu emulator line 107
@@ -203,9 +203,9 @@ M=D    // cpu emulator line 155
 @R14    // cpu emulator line 156
 A=M    // cpu emulator line 157
 0;JMP    // cpu emulator line 158
-// line 20: label IF_FALSE         // if n>=2, returns fib(n-2)+fib(n-1)    // cpu emulator line 159
+// Main.vm:20: label IF_FALSE         // if n>=2, returns fib(n-2)+fib(n-1)    // cpu emulator line 159
 ($Main.fibonacci$IF_FALSE)    // cpu emulator line 159
-// line 21: push argument 0    // cpu emulator line 159
+// Main.vm:21: push argument 0    // cpu emulator line 159
 @ARG    // cpu emulator line 159
 D=M    // cpu emulator line 160
 @0    // cpu emulator line 161
@@ -216,7 +216,7 @@ A=M    // cpu emulator line 165
 M=D    // cpu emulator line 166
 @SP    // cpu emulator line 167
 M=M+1    // cpu emulator line 168
-// line 22: push constant 2    // cpu emulator line 169
+// Main.vm:22: push constant 2    // cpu emulator line 169
 @2    // cpu emulator line 169
 D=A    // cpu emulator line 170
 @SP    // cpu emulator line 171
@@ -224,7 +224,7 @@ A=M    // cpu emulator line 172
 M=D    // cpu emulator line 173
 @SP    // cpu emulator line 174
 M=M+1    // cpu emulator line 175
-// line 23: sub    // cpu emulator line 176
+// Main.vm:23: sub    // cpu emulator line 176
 @SP    // cpu emulator line 176
 A=M-1    // cpu emulator line 177
 D=M    // cpu emulator line 178
@@ -237,9 +237,9 @@ A=M    // cpu emulator line 184
 M=D    // cpu emulator line 185
 @SP    // cpu emulator line 186
 M=M+1    // cpu emulator line 187
-// line 24: call Main.fibonacci 1  // computes fib(n-2)    // cpu emulator line 188
+// Main.vm:24: call Main.fibonacci 1  // computes fib(n-2)    // cpu emulator line 188
 //push return-address    // cpu emulator line 188
-@$Main.fibonacci$return-address    // cpu emulator line 188
+@Main.vm:24$Main.fibonacci$return-address    // cpu emulator line 188
 D=A    // cpu emulator line 189
 @SP    // cpu emulator line 190
 A=M    // cpu emulator line 191
@@ -296,8 +296,8 @@ M=D    // cpu emulator line 234
 @$Main.fibonacci    // cpu emulator line 235
 0;JMP    // cpu emulator line 236
 //(return-address)    // cpu emulator line 237
-($Main.fibonacci$return-address)    // cpu emulator line 237
-// line 25: push argument 0    // cpu emulator line 237
+(Main.vm:24$Main.fibonacci$return-address)    // cpu emulator line 237
+// Main.vm:25: push argument 0    // cpu emulator line 237
 @ARG    // cpu emulator line 237
 D=M    // cpu emulator line 238
 @0    // cpu emulator line 239
@@ -308,7 +308,7 @@ A=M    // cpu emulator line 243
 M=D    // cpu emulator line 244
 @SP    // cpu emulator line 245
 M=M+1    // cpu emulator line 246
-// line 26: push constant 1    // cpu emulator line 247
+// Main.vm:26: push constant 1    // cpu emulator line 247
 @1    // cpu emulator line 247
 D=A    // cpu emulator line 248
 @SP    // cpu emulator line 249
@@ -316,7 +316,7 @@ A=M    // cpu emulator line 250
 M=D    // cpu emulator line 251
 @SP    // cpu emulator line 252
 M=M+1    // cpu emulator line 253
-// line 27: sub    // cpu emulator line 254
+// Main.vm:27: sub    // cpu emulator line 254
 @SP    // cpu emulator line 254
 A=M-1    // cpu emulator line 255
 D=M    // cpu emulator line 256
@@ -329,9 +329,9 @@ A=M    // cpu emulator line 262
 M=D    // cpu emulator line 263
 @SP    // cpu emulator line 264
 M=M+1    // cpu emulator line 265
-// line 28: call Main.fibonacci 1  // computes fib(n-1)    // cpu emulator line 266
+// Main.vm:28: call Main.fibonacci 1  // computes fib(n-1)    // cpu emulator line 266
 //push return-address    // cpu emulator line 266
-@$Main.fibonacci$return-address    // cpu emulator line 266
+@Main.vm:28$Main.fibonacci$return-address    // cpu emulator line 266
 D=A    // cpu emulator line 267
 @SP    // cpu emulator line 268
 A=M    // cpu emulator line 269
@@ -388,8 +388,8 @@ M=D    // cpu emulator line 312
 @$Main.fibonacci    // cpu emulator line 313
 0;JMP    // cpu emulator line 314
 //(return-address)    // cpu emulator line 315
-($Main.fibonacci$return-address)    // cpu emulator line 315
-// line 29: add                    // returns fib(n-1) + fib(n-2)    // cpu emulator line 315
+(Main.vm:28$Main.fibonacci$return-address)    // cpu emulator line 315
+// Main.vm:29: add                    // returns fib(n-1) + fib(n-2)    // cpu emulator line 315
 @SP    // cpu emulator line 315
 A=M-1    // cpu emulator line 316
 D=M    // cpu emulator line 317
@@ -402,7 +402,7 @@ A=M    // cpu emulator line 323
 M=D    // cpu emulator line 324
 @SP    // cpu emulator line 325
 M=M+1    // cpu emulator line 326
-// line 30: return    // cpu emulator line 327
+// Main.vm:30: return    // cpu emulator line 327
 //FRAME=R13=LCL    // cpu emulator line 327
 @LCL    // cpu emulator line 327
 D=M    // cpu emulator line 328
@@ -473,7 +473,7 @@ D=A    // cpu emulator line 381
 M=D    // cpu emulator line 383
 //call Sys.init    // cpu emulator line 384
 //push return-address    // cpu emulator line 384
-@$Sys.init$return-address    // cpu emulator line 384
+@Main.vm:1$Sys.init$return-address    // cpu emulator line 384
 D=A    // cpu emulator line 385
 @SP    // cpu emulator line 386
 A=M    // cpu emulator line 387
@@ -530,31 +530,31 @@ M=D    // cpu emulator line 430
 @$Sys.init    // cpu emulator line 431
 0;JMP    // cpu emulator line 432
 //(return-address)    // cpu emulator line 433
-($Sys.init$return-address)    // cpu emulator line 433
-// line 1: // This file is part of www.nand2tetris.org    // cpu emulator line 433
-// line 2: // and the book "The Elements of Computing Systems"    // cpu emulator line 433
-// line 3: // by Nisan and Schocken, MIT Press.    // cpu emulator line 433
-// line 4: // File name: projects/08/FunctionCalls/FibonacciElement/Sys.vm    // cpu emulator line 433
-// line 5:     // cpu emulator line 433
-// line 6: // Pushes a constant, say n, onto the stack, and calls the Main.fibonacii    // cpu emulator line 433
-// line 7: // function, which computes the n'th element of the Fibonacci series.    // cpu emulator line 433
-// line 8: // Note that by convention, the Sys.init function is called "automatically"    // cpu emulator line 433
-// line 9: // by the bootstrap code.    // cpu emulator line 433
-// line 10:     // cpu emulator line 433
-// line 11: function Sys.init 0    // cpu emulator line 433
+(Main.vm:1$Sys.init$return-address)    // cpu emulator line 433
+// Sys.vm:1: // This file is part of www.nand2tetris.org    // cpu emulator line 433
+// Sys.vm:2: // and the book "The Elements of Computing Systems"    // cpu emulator line 433
+// Sys.vm:3: // by Nisan and Schocken, MIT Press.    // cpu emulator line 433
+// Sys.vm:4: // File name: projects/08/FunctionCalls/FibonacciElement/Sys.vm    // cpu emulator line 433
+// Sys.vm:5:     // cpu emulator line 433
+// Sys.vm:6: // Pushes a constant, say n, onto the stack, and calls the Main.fibonacii    // cpu emulator line 433
+// Sys.vm:7: // function, which computes the n'th element of the Fibonacci series.    // cpu emulator line 433
+// Sys.vm:8: // Note that by convention, the Sys.init function is called "automatically"    // cpu emulator line 433
+// Sys.vm:9: // by the bootstrap code.    // cpu emulator line 433
+// Sys.vm:10:     // cpu emulator line 433
+// Sys.vm:11: function Sys.init 0    // cpu emulator line 433
 ($Sys.init)    // cpu emulator line 433
-// line 12: //push constant 4    // cpu emulator line 433
-// line 13: push constant 2    // cpu emulator line 433
-@2    // cpu emulator line 433
+// Sys.vm:12: //push constant 4    // cpu emulator line 433
+// Sys.vm:13: push constant 4    // cpu emulator line 433
+@4    // cpu emulator line 433
 D=A    // cpu emulator line 434
 @SP    // cpu emulator line 435
 A=M    // cpu emulator line 436
 M=D    // cpu emulator line 437
 @SP    // cpu emulator line 438
 M=M+1    // cpu emulator line 439
-// line 14: call Main.fibonacci 1   // computes the 4'th fibonacci element    // cpu emulator line 440
+// Sys.vm:14: call Main.fibonacci 1   // computes the 4'th fibonacci element    // cpu emulator line 440
 //push return-address    // cpu emulator line 440
-@$Main.fibonacci$return-address    // cpu emulator line 440
+@Sys.vm:14$Main.fibonacci$return-address    // cpu emulator line 440
 D=A    // cpu emulator line 441
 @SP    // cpu emulator line 442
 A=M    // cpu emulator line 443
@@ -611,9 +611,9 @@ M=D    // cpu emulator line 486
 @$Main.fibonacci    // cpu emulator line 487
 0;JMP    // cpu emulator line 488
 //(return-address)    // cpu emulator line 489
-($Main.fibonacci$return-address)    // cpu emulator line 489
-// line 15: label WHILE    // cpu emulator line 489
+(Sys.vm:14$Main.fibonacci$return-address)    // cpu emulator line 489
+// Sys.vm:15: label WHILE    // cpu emulator line 489
 ($Main.fibonacci$WHILE)    // cpu emulator line 489
-// line 16: goto WHILE              // loops infinitely    // cpu emulator line 489
+// Sys.vm:16: goto WHILE              // loops infinitely    // cpu emulator line 489
 @$Main.fibonacci$WHILE    // cpu emulator line 489
 0;JMP    // cpu emulator line 490
