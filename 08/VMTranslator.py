@@ -275,7 +275,7 @@ for file in files_list:
                         out('@THAT')
                     out('D=M')
                 elif( segment == 'static' ):
-                    out(f'@{basename}.{value}')
+                    out(f'@{vm_file_name}.{value}')
                     out('D=M')
                 else:
                     out(f'@{segments_d[segment]}')
@@ -322,7 +322,7 @@ M=M-1''')
                     out(f'@SP')
                     out('AM=M-1')
                     out('D=M')
-                    out(f'@{basename}.{value}')
+                    out(f'@{vm_file_name}.{value}')
                     out('M=D')
                 else:
                      out(f'''
