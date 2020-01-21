@@ -94,7 +94,11 @@ def call(vm_file_name,i,function,n):
     out(f'({vm_file_name}.vm:{i+1}${function}$return-address)')
 
 for file in files_list:
+    [notext,ext]=os.path.splitext(file)
+    vm_file_name=os.path.basename(notext)
+        
     icode=[]
+    
     with open(file) as fp:
         for line in fp:
             # remove empty lines, and lines with only comments
@@ -106,19 +110,18 @@ for file in files_list:
                 line=m.group(1)
             icode.append(line.strip())
 
-
-    out('//Bootstrap code')
-    out('//SP=256')
-    out('@256')
-    out('D=A')
-    out('@SP')
-    out('M=D')
-    out('//call Sys.init')
-    call('Main',0,'Sys.init',0)
+    if ( os.path.basename(path)=="FibonacciElement" or os.path.basename(path)=="StaticsTest" ): 
+        out('//Bootstrap code')
+        out('//SP=256')
+        out('@256')
+        out('D=A')
+        out('@SP')
+        out('M=D')
+        out('//call Sys.init')
+        call('Main',0,'Sys.init',0)
         
     with open(file) as fp:
-        [notext,ext]=os.path.splitext(file)
-        vm_file_name=os.path.basename(notext)
+
         function=''
         
 
