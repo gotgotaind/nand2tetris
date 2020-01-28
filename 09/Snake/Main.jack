@@ -1,0 +1,15 @@
+// This file is a derivative of a part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// Original file name: projects/09/Square/Main.jack
+
+/** Initializes a new Snake game and starts running it. */
+class Main {
+    function void main() {
+        var SnakeGame game;
+        let game = SnakeGame.new();
+        do game.run();
+        do game.dispose();
+        return;
+    }
+}
