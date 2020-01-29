@@ -302,3 +302,74 @@ pop temp 0
 label IF_FALSE0
 push constant 0
 return
+function Snake.move 2
+push argument 0
+pop pointer 0
+push this 0
+push constant 0
+push argument 1
+add
+pop pointer 1
+push that 0
+add
+pop local 0
+push this 1
+push constant 1
+push argument 1
+add
+pop pointer 1
+push that 0
+add
+pop local 1
+push local 0
+push constant 500
+lt
+push local 0
+and
+push constant 4
+gt
+push local 1
+and
+push constant 250
+lt
+push local 0
+and
+push constant 4
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push constant 1
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push local 0
+push local 1
+push local 0
+push this 2
+add
+push local 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push local 0
+pop this 0
+push local 1
+pop this 1
+label IF_FALSE0
+push constant 0
+return

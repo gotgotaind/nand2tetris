@@ -105,4 +105,21 @@ class Snake {
       }
       return;
    }
+   
+   /** Moves the snake into dirVector direction */
+   method void move(Array dv) {
+      var int nx;
+      var int ny;
+      let nx=x+dv[0];
+      let ny=y+dv[1];
+      if ( nx < 500 & nx > 4 & ny < 250 & nx > 4 ) {  
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x, y, x + 1, y + size);
+        do Screen.setColor(true);
+        do Screen.drawRectangle(nx,ny, nx + size, ny + size);
+        let x=nx;
+        let y=ny;
+      }
+      return;
+   }
 }

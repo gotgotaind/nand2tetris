@@ -32,10 +32,14 @@ class SnakeGame {
 
    /** Moves the snake in the current direction. */
    method void moveSnake() {
-      if (direction = 1) { do snake.moveUp(); }
-      if (direction = 2) { do snake.moveDown(); }
-      if (direction = 3) { do snake.moveLeft(); }
-      if (direction = 4) { do snake.moveRight(); }
+      var Array dirVector;
+      let dirVector=Array.new(2);
+      if (direction = 1) { let dirVector[0]=1;let dirVector[1]=0; }
+      if (direction = 2) { let dirVector[0]=0;let dirVector[1]=-1;  }
+      if (direction = 3) { let dirVector[0]=-1;let dirVector[1]=0;  }
+      if (direction = 4) { let dirVector[0]=0;let dirVector[1]=1;  }
+      do snake.move(dirVector);
+      do Memory.deAlloc(dirVector);
       do Sys.wait(5);  // delays the next movement
       return;
    }
