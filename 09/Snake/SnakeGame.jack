@@ -34,10 +34,10 @@ class SnakeGame {
    method void moveSnake() {
       var Array dirVector;
       let dirVector=Array.new(2);
-      if (direction = 1) { let dirVector[0]=1;let dirVector[1]=0; }
-      if (direction = 2) { let dirVector[0]=0;let dirVector[1]=-1;  }
+      if (direction = 1) { let dirVector[0]=0;let dirVector[1]=-1; }
+      if (direction = 2) { let dirVector[0]=0;let dirVector[1]=1;  }
       if (direction = 3) { let dirVector[0]=-1;let dirVector[1]=0;  }
-      if (direction = 4) { let dirVector[0]=0;let dirVector[1]=1;  }
+      if (direction = 4) { let dirVector[0]=1;let dirVector[1]=0;  }
       do snake.move(dirVector);
       do Memory.deAlloc(dirVector);
       do Sys.wait(5);  // delays the next movement

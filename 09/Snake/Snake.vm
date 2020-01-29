@@ -325,17 +325,17 @@ push local 0
 push constant 500
 lt
 push local 0
-and
 push constant 4
 gt
-push local 1
 and
+push local 1
 push constant 250
 lt
-push local 0
 and
+push local 1
 push constant 4
 gt
+and
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
