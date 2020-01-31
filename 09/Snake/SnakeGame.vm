@@ -2,10 +2,11 @@ function SnakeGame.new 0
 push constant 2
 call Memory.alloc 1
 pop pointer 0
-push constant 256
 push constant 128
-push constant 2
-call Snake.new 3
+push constant 128
+call Vertex.new 2
+push constant 4
+call Snake.new 2
 pop this 0
 push constant 4
 pop this 1

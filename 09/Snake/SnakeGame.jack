@@ -18,7 +18,7 @@ class SnakeGame {
    constructor SnakeGame new() {
       // Creates a 2 by 2 pixels snake and positions it at the middle
       // of the screen.
-      let snake = Snake.new(256, 128, 2);
+      let snake = Snake.new(Vertex.new(128,128), 4);
       let direction = 4;  // initial state is move right
       return this;
    }
