@@ -27,7 +27,7 @@ class Snake {
    }
   
    /** Moves the snake into dirVector direction */
-   method void move(Array dv) {
+   method void move(Array dv,Food food) {
       var int nx;
       var int ny;
       var Vertex vertex;
@@ -38,7 +38,11 @@ class Snake {
       let y=vertex.gety();
       let nx=x+dv[0];
       let ny=y+dv[1];
-      if ( (nx < (513-size) ) & (nx > -1) & (ny < (257-size)) & (ny > -1) ) {  
+      if ( (nx < (512-size) ) & (nx > -1) & (ny < (256-size)) & (ny > -1) ) {
+        if ( ( nx = food.getx() ) & ( ny = food.gety() ) )
+        {
+            do snake.eat(food)
+        }
         do vertex.erase(size);
         do vertex.setx(nx);
         do vertex.sety(ny);
@@ -46,5 +50,11 @@ class Snake {
 
       }
       return;
+   }
+   method void eat(Food food)
+   {
+        let nvertices=Array.new(length+1);
+        let nvertives[length]=Vertex.new(food.getx(),food.gety());
+        for(
    }
 }

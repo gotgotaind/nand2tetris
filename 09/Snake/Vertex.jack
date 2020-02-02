@@ -34,5 +34,6 @@ class Vertex {
         do Screen.drawRectangle(x,y,x+size-1,y+size-1);
         return;
     }
+
     
 }

@@ -11,36 +11,44 @@
 
 class SnakeGame {
    field Snake snake; // the snake of this game
+   field Food food; // the food in the game
    field int direction; // the snake's current direction: 
                         // 0=none, 1=up, 2=down, 3=left, 4=right
+    field int size;
+    field int delay;
 
    /** Constructs a new Snake Game. */
    constructor SnakeGame new() {
       // Creates a 2 by 2 pixels snake and positions it at the middle
       // of the screen.
-      let snake = Snake.new(Vertex.new(128,128), 4);
+      let size=5;
+      let snake = Snake.new(Vertex.new(128,128), size);
+      let food = Food.new();
       let direction = 4;  // initial state is move right
+      let delay=100;
+      
       return this;
    }
 
    /** Disposes this game. */
    method void dispose() {
       do snake.dispose();
+      do food.dispose();
       do Memory.deAlloc(this);
       return;
    }
 
    /** Moves the snake in the current direction. */
-   method void moveSnake() {
+   method void moveSnake(Food food) {
       var Array dirVector;
       let dirVector=Array.new(2);
-      if (direction = 1) { let dirVector[0]=0;let dirVector[1]=-1; }
-      if (direction = 2) { let dirVector[0]=0;let dirVector[1]=1;  }
-      if (direction = 3) { let dirVector[0]=-1;let dirVector[1]=0;  }
-      if (direction = 4) { let dirVector[0]=1;let dirVector[1]=0;  }
-      do snake.move(dirVector);
+      if (direction = 1) { let dirVector[0]=0;let dirVector[1]=-size; }
+      if (direction = 2) { let dirVector[0]=0;let dirVector[1]=size;  }
+      if (direction = 3) { let dirVector[0]=-size;let dirVector[1]=0;  }
+      if (direction = 4) { let dirVector[0]=size;let dirVector[1]=0;  }
+      do snake.move(dirVector,food);
       do Memory.deAlloc(dirVector);
-      do Sys.wait(5);  // delays the next movement
+      do Sys.wait(delay);  // delays the next movement
       return;
    }
 
@@ -50,11 +58,12 @@ class SnakeGame {
       var boolean exit;
       let exit = false;
       
+      do food.draw();
       while (~exit) {
          // waits for a key to be pressed
          while (key = 0) {
             let key = Keyboard.keyPressed();
-            do moveSnake();
+            do moveSnake(food);
          }
          if (key = 81)  { let exit = true; }     // q key
          // if (key = 90)  { do square.decSize(); } // z key
@@ -67,7 +76,7 @@ class SnakeGame {
          // waits for the key to be released
          while (~(key = 0)) {
             let key = Keyboard.keyPressed();
-            do moveSnake();
+            do moveSnake(food);
          }
      } // while
      return;

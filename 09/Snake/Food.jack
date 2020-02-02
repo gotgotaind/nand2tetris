@@ -1,0 +1,54 @@
+class Food {
+    field int x;
+    field int y;
+    constructor Food new() {
+        let x=64;
+        let y=128;
+        return this;
+    }
+    
+    method int getx() {
+        return x;
+    }
+    method int gety() {
+        return y;
+    }
+    
+    method void setx(int _x) {
+        let x=_x;
+        return;
+    }
+    
+    method void sety(int _y) {
+        let y=_y;
+        return;
+    }
+    
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }    
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawPixel(x,y);
+        do Screen.drawPixel(x+1,y+1);
+        do Screen.drawPixel(x+2,y+2);
+        do Screen.drawPixel(x+3,y+3);
+        do Screen.drawPixel(x+4,y+4);
+        do Screen.drawPixel(x+4,y);
+        do Screen.drawPixel(x+3,y+1);
+        do Screen.drawPixel(x+1,y+3);
+        do Screen.drawPixel(x+4,y);
+        return;
+    }
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawPixel(x+1,y);
+        do Screen.drawPixel(x,y+1);
+        do Screen.drawPixel(x+1,y+1);
+        do Screen.drawPixel(x+2,y+1);
+        do Screen.drawPixel(x+1,y+2);
+        return;
+    }
+}    
+    

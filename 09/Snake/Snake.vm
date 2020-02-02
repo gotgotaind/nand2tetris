@@ -65,7 +65,7 @@ push that 0
 add
 pop local 1
 push local 0
-push constant 513
+push constant 512
 push this 0
 sub
 lt
@@ -75,7 +75,7 @@ neg
 gt
 and
 push local 1
-push constant 257
+push constant 256
 push this 0
 sub
 lt
@@ -88,6 +88,19 @@ and
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
+push local 0
+push argument 2
+call Food.getx 1
+eq
+push local 1
+push argument 2
+call Food.gety 1
+eq
+and
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+label IF_FALSE1
 push local 2
 push this 0
 call Vertex.erase 2
