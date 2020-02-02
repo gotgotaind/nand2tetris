@@ -6,8 +6,20 @@
 /** Initializes a new Snake game and starts running it. */
 class Main {
     function void main() {
+        var Vertex vertex;
         var SnakeGame game;
-        let game = SnakeGame.new();
+        var int x;
+        var Snake snake; // d
+        var Array vertices; // d
+        
+        let vertex=Vertex.new(128,128);
+        let game = SnakeGame.new(vertex);
+        let snake=game.get_snake(); //d
+        let vertices=snake.get_vertices(); //d
+        let vertex=vertices[0]; //d
+        let x=vertex.getx(); //d
+
+
         do game.run();
         do game.dispose();
         return;

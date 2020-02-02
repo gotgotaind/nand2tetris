@@ -2,7 +2,7 @@ function Food.new 0
 push constant 2
 call Memory.alloc 1
 pop pointer 0
-push constant 64
+push constant 78
 pop this 0
 push constant 128
 pop this 1

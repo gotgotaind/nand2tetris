@@ -2,7 +2,7 @@ class Food {
     field int x;
     field int y;
     constructor Food new() {
-        let x=64;
+        let x=78;
         let y=128;
         return this;
     }
