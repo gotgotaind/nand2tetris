@@ -12,8 +12,8 @@ class Main {
         var Snake snake; // d
         var Array vertices; // d
         
-        let vertex=Vertex.new(128,128);
-        let game = SnakeGame.new(vertex);
+
+        let game = SnakeGame.new();
         let snake=game.get_snake(); //d
         let vertices=snake.get_vertices(); //d
         let vertex=vertices[0]; //d

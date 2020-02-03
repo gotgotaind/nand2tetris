@@ -14,16 +14,16 @@ class SnakeGame {
    field Food food; // the food in the game
    field int direction; // the snake's current direction: 
                         // 0=none, 1=up, 2=down, 3=left, 4=right
-    field int size;
+    field int size; // size of a vertex
     field int delay;
     
    /** Constructs a new Snake Game. */
-   constructor SnakeGame new(Vertex vertex) {
+   constructor SnakeGame new() {
       // Creates a 2 by 2 pixels snake and positions it at the middle
       // of the screen.
-      let size=5;
-      let snake = Snake.new(vertex, size);
-      let food = Food.new();
+      let size=8;
+      let snake = Snake.new(Vertex.new(128,128,size),size);
+      let food = Food.new(64,128,size);
       let direction = 4;  // initial state is move right
       let delay=100;
       

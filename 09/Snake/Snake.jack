@@ -15,8 +15,9 @@ class Snake {
       let size = _size;
       let length = 1;
       let vertices=Array.new(length);
+      // a new snake is of length one has only one vertex
       let vertices[0]=vertex;
-      do vertex.draw(size);
+      do vertex.draw();
       return this;
    }
 
@@ -34,9 +35,10 @@ class Snake {
       var int x;
       var int y;
       var int i;
-      var Vertex vertex;
+      var Vertex tail;
       var Array nvertices;
       var Array overtices;
+      
       let head=vertices[length-1];
       let y=head.gety();
       //do Output.printString("Here line 42"); //d
@@ -44,34 +46,48 @@ class Snake {
       //do Output.printInt(y); //d
       let x=head.getx();
       
+      // the tail next position should be nx,ny
       let nx=x+dv[0];
       let ny=y+dv[1];
+      
+      // check if this new position hits a wall
       if ( (nx < (512-size) ) & (nx > -1) & (ny < (256-size)) & (ny > -1) ) {
+        // check is this new position is food
         if ( ( nx = food.getx() ) & ( ny = food.gety() ) )
         {
             //do Output.printString("Here line 52, about to enter snake.eat"); //d
             //do Output.println(); //d    
             do eat(food);
-            let head=vertices[length-1];
-            do head.draw(size);
+
         }
         else
         {
             //do Output.printString("Here line 52, about to move without eating"); //d
             //do Output.printInt(length); //d
-            //do Output.println(); //d 
-            let vertex=vertices[0];
-            do vertex.erase(size);
+            //do Output.println(); //d
+
+            // erase the tail
+            let tail=vertices[0];
+            do tail.erase();
+            
+            // create a new array of vertices of same length
+            // starting after the tail
             let nvertices=Array.new(length);
-            let i = 0;
-            while ( i < (length-1) ) {
-                let nvertices[i]=vertices[i+1];
+            let i = 1;
+            while ( i < (length) ) {
+                let nvertices[i-1]=vertices[i];
                 let i=i+1;
             }
-            do head.setx(nx);
-            do head.sety(ny);
-            do head.draw(size);
-            let nvertices[length-1]=head;
+            
+            // set the tail position at the position where the snake has moved
+            // move the tail vertex to the head ( the last vertex of the array )
+            do tail.setx(nx);
+            do tail.sety(ny);
+            let nvertices[length-1]=tail;
+            // draw the new head vertex ( which was at the tail before )!
+            do tail.draw();
+
+            // replace the snake vertices with this new vertices array
             let overtices=vertices;
             let vertices=nvertices;
             do Memory.deAlloc(overtices);
@@ -87,17 +103,54 @@ class Snake {
         var Array nvertices;
         var Array overtices;
         var int i;
-        let nvertices=Array.new(length+1);
-        let nvertices[length]=Vertex.new(food.getx(),food.gety());
+        var Vertex head;
+        var int x;
+        var int y;
+        var int d;
+        var int r;
+        
+        // increase length of the snake 
+        // because the snake has eaten food
+        let length=length+1;
+        // create a new array of vertices
+        let nvertices=Array.new(length);
+        
+        // The new head is where the food was
+        let head=Vertex.new(food.getx(),food.gety(),size);
+        do head.draw();
+        let nvertices[length-1]=head;
+        
+        // The rest of the vertices are the same as before
         let i=0;
-        while ( i < length ) {
+        while ( i < (length-1) ) {
             let nvertices[i]=vertices[i];
             let i=i+1;
         }
+        
+        // replace vertices by nvertices
         let overtices=vertices;
         let vertices=nvertices;
-        let length=length+1;
         do Memory.deAlloc(overtices);
+        
+        // move food to a new position
+        let x=food.getx();
+        let y=food.gety();
+        
+        // calculate x+random modulo 256
+        let x=x+64;
+        let d=x/(256-size);
+        let r=x-(d*(256-size));
+        let x=r+(size/2);
+        do food.setx(x);
+        // calculate y+random modulo 512
+        let y=y+64;
+        let d=y/(512-size);
+        let r=y-(d*(512-size));
+        let y=r+(size/2);
+        do food.sety(y);
+        do food.draw();
+        
+
         return;
    }
    

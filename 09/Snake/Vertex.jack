@@ -1,10 +1,12 @@
 class Vertex {
     field int x;
     field int y;
+    field int size;
     
-    constructor Vertex new(int _x, int _y) {
+    constructor Vertex new(int _x, int _y, int _size) {
         let x=_x;
         let y=_y;
+        let size=_size;
         return this;
     }
     method int getx() {
@@ -24,12 +26,12 @@ class Vertex {
         return;
     }
     
-    method void draw(int size) {
+    method void draw() {
         do Screen.setColor(true);
         do Screen.drawRectangle(x,y,x+size-1,y+size-1);
         return;
     }
-    method void erase(int size) {
+    method void erase() {
         do Screen.setColor(false);
         do Screen.drawRectangle(x,y,x+size-1,y+size-1);
         return;
