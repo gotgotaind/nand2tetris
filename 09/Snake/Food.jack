@@ -33,12 +33,18 @@ class Food {
     }    
     method void draw() {
         do Screen.setColor(true);
-        do Screen.drawCircle(x+(size/2),y+(size/2),((size-1)/2));
+        do Screen.drawLine(x,y+(size/2)-1,x+(size/2)-1,y);
+        do Screen.drawLine(x+(size/2),y,x+size-1,y+(size/2)-1);
+        do Screen.drawLine(x+size-1,y+(size/2),x+(size/2),y+size-1);
+        do Screen.drawLine(x+(size/2),y+size-1,x,y+(size/2));
         return;
     }
     method void erase() {
         do Screen.setColor(false);
-        do Screen.drawCircle(x+(size/2),y+(size/2),((size-1)/2));
+        do Screen.drawLine(x,y+(size/2)-1,x+(size/2)-1,y);
+        do Screen.drawLine(x+(size/2),y,x+size-1,y+(size/2)-1);
+        do Screen.drawLine(x+size-1,y+(size/2),x+(size/2),y+size-1);
+        do Screen.drawLine(x+(size/2),y+size-1,x,y+(size/2));
         return;
     }
 }    

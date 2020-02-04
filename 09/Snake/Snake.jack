@@ -36,14 +36,12 @@ class Snake {
       var int y;
       var int i;
       var Vertex tail;
+      var Vertex vertex;
       var Array nvertices;
-      var Array overtices;
+      var char key;
       
       let head=vertices[length-1];
       let y=head.gety();
-      //do Output.printString("Here line 42"); //d
-      //do Output.println(); //d
-      //do Output.printInt(y); //d
       let x=head.getx();
       
       // the tail next position should be nx,ny
@@ -51,21 +49,51 @@ class Snake {
       let ny=y+dv[1];
       
       // check if this new position hits a wall
-      if ( (nx < (512-size) ) & (nx > -1) & (ny < (256-size)) & (ny > -1) ) {
+      if ( (nx < (512-size+1) ) & (nx > -1) & (ny < (256-size+1)) & (ny > -1) ) {
         // check is this new position is food
         if ( ( nx = food.getx() ) & ( ny = food.gety() ) )
-        {
-            //do Output.printString("Here line 52, about to enter snake.eat"); //d
-            //do Output.println(); //d    
+        {  
             do eat(food);
-
         }
         else
         {
-            //do Output.printString("Here line 52, about to move without eating"); //d
-            //do Output.printInt(length); //d
-            //do Output.println(); //d
+            // is the snake eating itself?
+            let i=0;
+            while ( i < length )
+            {
+                let vertex=vertices[i];
+                if ( ( nx = vertex.getx() ) & ( ny=vertex.gety() ) ) {
 
+                    while(0=0) {
+                        // Do a blinking game over screen with score
+                        // And exit if q key is pressed
+                        do Output.moveCursor(12,26);
+                        do Output.printString("Score:");
+                        do Output.printInt(length);
+                        do Output.moveCursor(13,26);
+                        do Output.printString("Press q to quit");                
+                        do Output.moveCursor(11,26);
+                        do Output.printString("Game over!");
+                        let key = Keyboard.keyPressed();
+                        if (key = 81)  { do Sys.halt(); } 
+                        do Sys.wait(500);
+                        do Output.moveCursor(12,26);
+                        do Output.printString("       ");
+                        do Output.moveCursor(13,26);
+                        do Output.printString("               ");                
+                        do Output.moveCursor(11,26);
+                        do Output.printString("          ");
+                        let key = Keyboard.keyPressed();
+                        if (key = 81)  { do Sys.halt(); } 
+                        do Sys.wait(500);
+                        let key = Keyboard.keyPressed();
+                        if (key = 81)  { do Sys.halt(); } 
+                    }
+                    
+                }
+                let i=i+1;
+            }
+            
             // erase the tail
             let tail=vertices[0];
             do tail.erase();
@@ -88,9 +116,11 @@ class Snake {
             do tail.draw();
 
             // replace the snake vertices with this new vertices array
-            let overtices=vertices;
-            let vertices=nvertices;
-            do Memory.deAlloc(overtices);
+            //let overtices=vertices;
+            //let vertices=nvertices;
+            //do Memory.deAlloc(overtices);
+            do Memory.deAlloc(vertices);
+            let vertices=nvertices;            
         }
 
       }
@@ -101,7 +131,6 @@ class Snake {
    method void eat(Food food)
    {
         var Array nvertices;
-        var Array overtices;
         var int i;
         var Vertex head;
         var int x;
@@ -128,28 +157,32 @@ class Snake {
         }
         
         // replace vertices by nvertices
-        let overtices=vertices;
+        do Memory.deAlloc(vertices);
         let vertices=nvertices;
-        do Memory.deAlloc(overtices);
+        
         
         // move food to a new position
         let x=food.getx();
         let y=food.gety();
         
-        // calculate x+random modulo 256
-        let x=x+64;
-        let d=x/(256-size);
-        let r=x-(d*(256-size));
-        let x=r+(size/2);
+        // pseudo random generator by adding some arbitrary large value
+        // and taking the modulo of the size of the screen
+        let x=x+5353;
+        let x=Snakelib.modulo(x,512);        
+        // also round to a multiple of size, else the snake
+        // make never reach the food because it moves by steps
+        // of size
+        let x=(x/size)*size;
         do food.setx(x);
-        // calculate y+random modulo 512
-        let y=y+64;
-        let d=y/(512-size);
-        let r=y-(d*(512-size));
-        let y=r+(size/2);
-        do food.sety(y);
-        do food.draw();
         
+        // same treatment for y
+        let y=y+6343;
+        let y=Snakelib.modulo(y,256);
+        let y=(y/size)*size;
+        do food.sety(y);
+        
+        // draw the food at its new position
+        do food.draw();
 
         return;
    }

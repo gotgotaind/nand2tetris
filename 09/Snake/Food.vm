@@ -50,21 +50,82 @@ not
 call Screen.setColor 1
 pop temp 0
 push this 0
+push this 1
+push this 2
+push constant 2
+call Math.divide 2
+add
+push constant 1
+sub
+push this 0
+push this 2
+push constant 2
+call Math.divide 2
+add
+push constant 1
+sub
+push this 1
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+push constant 2
+call Math.divide 2
+add
+push this 1
+push this 0
+push this 2
+add
+push constant 1
+sub
+push this 1
+push this 2
+push constant 2
+call Math.divide 2
+add
+push constant 1
+sub
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+add
+push constant 1
+sub
+push this 1
+push this 2
+push constant 2
+call Math.divide 2
+add
+push this 0
 push this 2
 push constant 2
 call Math.divide 2
 add
 push this 1
 push this 2
+add
+push constant 1
+sub
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
 push constant 2
 call Math.divide 2
 add
+push this 1
 push this 2
+add
 push constant 1
 sub
+push this 0
+push this 1
+push this 2
 push constant 2
 call Math.divide 2
-call Screen.drawCircle 3
+add
+call Screen.drawLine 4
 pop temp 0
 push constant 0
 return
@@ -75,21 +136,82 @@ push constant 0
 call Screen.setColor 1
 pop temp 0
 push this 0
+push this 1
+push this 2
+push constant 2
+call Math.divide 2
+add
+push constant 1
+sub
+push this 0
+push this 2
+push constant 2
+call Math.divide 2
+add
+push constant 1
+sub
+push this 1
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+push constant 2
+call Math.divide 2
+add
+push this 1
+push this 0
+push this 2
+add
+push constant 1
+sub
+push this 1
+push this 2
+push constant 2
+call Math.divide 2
+add
+push constant 1
+sub
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+add
+push constant 1
+sub
+push this 1
+push this 2
+push constant 2
+call Math.divide 2
+add
+push this 0
 push this 2
 push constant 2
 call Math.divide 2
 add
 push this 1
 push this 2
+add
+push constant 1
+sub
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
 push constant 2
 call Math.divide 2
 add
+push this 1
 push this 2
+add
 push constant 1
 sub
+push this 0
+push this 1
+push this 2
 push constant 2
 call Math.divide 2
-call Screen.drawCircle 3
+add
+call Screen.drawLine 4
 pop temp 0
 push constant 0
 return

@@ -81,10 +81,6 @@ class SnakeGame {
      } // while
      return;
    }
-   
-   method Snake get_snake() {
-        return snake;
-   }
 }
 
 

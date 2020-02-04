@@ -9,19 +9,11 @@ class Main {
         var Vertex vertex;
         var SnakeGame game;
         var int x;
-        var Snake snake; // d
-        var Array vertices; // d
         
-
         let game = SnakeGame.new();
-        let snake=game.get_snake(); //d
-        let vertices=snake.get_vertices(); //d
-        let vertex=vertices[0]; //d
-        let x=vertex.getx(); //d
-
-
         do game.run();
         do game.dispose();
+
         return;
     }
 }

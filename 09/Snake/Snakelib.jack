@@ -1,0 +1,10 @@
+class Snakelib {
+
+    function int modulo(int x, int mod) {
+        var int d;
+        var int r;
+        let d=x/mod;
+        let r=x-(d*mod);
+        return r;
+    }
+}
