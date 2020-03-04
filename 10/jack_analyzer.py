@@ -37,6 +37,8 @@ else:
 
 print(f"The following files will be compiled : {files_list}")
 
-
+for file in files_list:
+    tok=jack_tokenizer(file)
+    
 
 
