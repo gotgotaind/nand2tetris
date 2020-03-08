@@ -26,27 +26,29 @@ next_slash_will_end_starslash_comment=False
 for c in read_data:
     
     # managing comments
-    if( c=='/' and start_comment==False ):
+    if( c=='/' and comment_until_next_line==False and start_comment==False and not comment_until_starslash ):
         log('start_comment',c,line_num,char_in_line_num,char_num)
         start_comment=True
         char_num=char_num+1
         char_in_line_num=char_in_line_num+1
         continue
-    if( start_comment and not comment_until_next_line and not comment_until_starslash ):
+    if( start_comment ):
         if ( c=='/' ):
             log('comment_until_next_line',c,line_num,char_in_line_num,char_num)
             comment_until_next_line=True
+            start_comment=False
             char_num=char_num+1
             char_in_line_num=char_in_line_num+1            
             continue
         elif ( c=='*' ):
             log('comment_until_starslash',c,line_num,char_in_line_num,char_num)
             comment_until_starslash=True
+            start_comment=False
             char_num=char_num+1
             char_in_line_num=char_in_line_num+1            
             continue
         else:
-            print(f'syntax error, invalid character {c} following a / at {line_num}:{char_in_line_num}')
+            print(f'start_comment syntax error, invalid character {c} following a / at {line_num}:{char_in_line_num}')
             exit(1)
     if( comment_until_next_line ):
         if ( c!='\n' ):
@@ -77,19 +79,21 @@ for c in read_data:
         else:
             log('comment_until_starslash, got * char, setting next_slash_will_end_starslash_comment',c,line_num,char_in_line_num,char_num)
             char_num=char_num+1
-            char_in_line_num=char_in_line_num+1   
+            char_in_line_num=char_in_line_num+1
+            comment_until_starslash=False            
             next_slash_will_end_starslash_comment=True
             continue
             
     if ( next_slash_will_end_starslash_comment ):
         if( c=='/' ):
-            start_comment=False
-            comment_until_starslash=False
+            log('next_slash_will_end_starslash_comment, got / char, setting next_slash_will_end_starslash_comment to false',c,line_num,char_in_line_num,char_num)
             next_slash_will_end_starslash_comment=False
             char_num=char_num+1
             char_in_line_num=char_in_line_num+1               
             continue
         else:
+            log('next_slash_will_end_starslash_comment, did not get a / char, setting back comment_until_starslash',c,line_num,char_in_line_num,char_num)
+            comment_until_starslash=True
             next_slash_will_end_starslash_comment=False
             if( c=='\n' ):
                 line_num=lin_num+1
