@@ -46,6 +46,7 @@ for c in read_data:
                 out('keyword',word)
             else:
                 out('identifier',word)
+            word=''
 
     if ( state == 'integerConstant' ):
         if ( c in digits ):
@@ -66,13 +67,15 @@ for c in read_data:
         if( c!='/' and c!='*' ):
             state='none'
             out('symbol','/')
+            
+    
                 
     if ( state == 'none' ):
         # a bare slash should be the start of a comment
         state=do_next_state(test_char='/',next_state='/',state=state,c=c,line_num=line_num,char_in_line_num=char_in_line_num,char_num=char_num)
 
         # a ' should be the start of a StringConstant
-        state=do_next_state(test_char='"',next_state='StringConstant',state=state,c=c,line_num=line_num,char_in_line_num=char_in_line_num,char_num=char_num)       
+        state=do_next_state(test_char='"',next_state='StringConstant',state=state,c=c,line_num=line_num,char_in_line_num=char_in_line_num,char_num=char_num)
 
         # maybe we have a symbol?
         # / symbol is managed separately in the comments parsing part
@@ -117,6 +120,15 @@ for c in read_data:
         # if char is not /, go back to state '/*'
         if ( state != 'none' ):
             state = '/*'
+    
+    elif ( state == 'StringConstant' ):
+        if ( c == '"' ):
+            out('stringconstant',word)
+            state='none'
+            word=''
+        else:
+            word=word+c
+    
     
       
         
