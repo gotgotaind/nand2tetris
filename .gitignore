@@ -4,3 +4,4 @@
 *.bin
 *.nocommentnorlabels
 *.nocomment
+__pycache__

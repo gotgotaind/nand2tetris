@@ -11,6 +11,7 @@ import sys
 import re
 import os
 import glob
+from jack_tokenizer import jack_tokenizer
 
 
 # if no argument is given set path as current directory
