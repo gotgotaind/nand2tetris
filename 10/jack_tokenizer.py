@@ -160,6 +160,19 @@ class jack_tokenizer:
                             c='&amp;'
                         dfp.write(f'<{token[0]}> {c} </{token[0]}>\n')
                     dfp.write('</tokens>\n')
-    
+            self.cursor=0
+            self.len=len(tokens)
+            
+    def hasMoreTokens(this):
+        if ( this.cursor<(this.len - 1)):
+            return True
+        else:
+            return False
 
+    def tokenType(this):
+        return this.tokens[this.cursor][0]
+    
+    def keyWord(this):
+        if (this.tokenType!='KEYWORD'):
+            
         
