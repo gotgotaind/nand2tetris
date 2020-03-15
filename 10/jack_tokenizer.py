@@ -1,4 +1,4 @@
-debug=1
+debug=0
 symbols=['{','}','[',']','(',')','.',';',',','+','~','*','/','&','|','>','<','=','-']
 keywords=['class','constructor','function','method','field','static','var','int','char','boolean','void','true','false','null','this','let','do','if','else','return','while']
 digits=list(map(lambda x:str(x),range(10)))
@@ -161,7 +161,7 @@ class jack_tokenizer:
                         dfp.write(f'<{token[0]}> {c} </{token[0]}>\n')
                     dfp.write('</tokens>\n')
             self.cursor=0
-            self.len=len(tokens)
+            self.len=len(self.tokens)
             
     def hasMoreTokens(this):
         if ( this.cursor<(this.len - 1)):
@@ -169,10 +169,52 @@ class jack_tokenizer:
         else:
             return False
 
+    def advance(this):
+        if(this.hasMoreTokens()):
+            this.cursor=this.cursor+1
+        else:
+            raise MyException('advance called while hosMoreTokens is false')
+    
     def tokenType(this):
-        return this.tokens[this.cursor][0]
+        token_type=this.tokens[this.cursor][0]
+        if ( token_type=='integerConstant'):
+            return('INT_CONST')
+        elif( token_type=='stringConstant'):
+            return('STRING_CONST')
+        else:
+            return token_type.upper()
     
     def keyWord(this):
-        if (this.tokenType!='KEYWORD'):
+        if (this.tokenType()!='KEYWORD'):
+            raise MyException("keyWord called on non keyWord token")
+        else:
+            return this.tokens[this.cursor][1].upper()
+    
+    def symbol(this):
+        if (this.tokenType()!='SYMBOL'):
+            raise MyException("symbol called on non symbol token")
+        else:
+            return this.tokens[this.cursor][1]        
+
+    def identifier(this):
+        if (this.tokenType()!='IDENTIFIER'):
+            raise MyException("identifier called on non identifier token")
+        else:
+            return this.tokens[this.cursor][1]                
+
+    def intVal(this):
+        if (this.tokenType()!='INT_CONST'):
+            raise MyException("intVal called on non INT_CONST token")
+        else:
+            return int(this.tokens[this.cursor][1])  
+
+    def stringVal(this):
+        if (this.tokenType()!='STRING_CONST'):
+            raise MyException("stringVal called on non STRING_CONST token")
+        else:
+            return this.tokens[this.cursor][1] 
             
-        
+class MyException(Exception):
+    pass
+
+       

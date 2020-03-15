@@ -40,6 +40,10 @@ print(f"The following files will be compiled : {files_list}")
 
 for file in files_list:
     tok=jack_tokenizer(file)
+    while( tok.hasMoreTokens() ):
+        a=tok.tokenType()        
+        print(f'toto {a}')
+        tok.advance()
     
 
 
