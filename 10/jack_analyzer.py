@@ -12,7 +12,7 @@ import re
 import os
 import glob
 from jack_tokenizer import jack_tokenizer
-
+from compilation_engine import compilation_engine
 
 # if no argument is given set path as current directory
 if len(sys.argv) == 1:
@@ -40,10 +40,15 @@ print(f"The following files will be compiled : {files_list}")
 
 for file in files_list:
     tok=jack_tokenizer(file)
-    while( tok.hasMoreTokens() ):
-        a=tok.tokenType()        
-        print(f'toto {a}')
-        tok.advance()
+    ofile=os.path.splitext(file)[0]+".my.xml"
+    print(f"The output file will be : {ofile}")
+    with open(ofile,'w') as ofp:
+        ce=compilation_engine(tok,ofp)
+        ce.compile_class()
+        # while( tok.hasMoreTokens() ):
+            # a=tok.tokenType()        
+            # ofp.write(f'toto {a}\n')
+            # tok.advance()
     
 
 
