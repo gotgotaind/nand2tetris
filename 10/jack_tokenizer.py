@@ -22,11 +22,11 @@ def log(msg,char,line_num,char_in_line_num,char_num):
         
 class jack_tokenizer:
 
+    
 
-
-    def add_token(this,token_type,token):
+    def add_token(this,token_type,token,position_str):
         # example <keyword> class </keyword>
-        this.tokens.append((token_type,token))
+        this.tokens.append((token_type,token,position_str))
         if ( debug > 0 ):
             print(f'<{token_type}> {token} </{token_type}>')
 
@@ -43,6 +43,9 @@ class jack_tokenizer:
 
         
         for c in this.read_data:
+        
+            
+            position_str=f'{this.file} {line_num}:{char_in_line_num} (char_num: {char_num})'
             
             if ( state == 'identifier_or_keyword' ):
                 if ( c.isalpha() or c=='_' or c.isdigit() ):
@@ -51,9 +54,9 @@ class jack_tokenizer:
                     # end of the identifier_or_keyword
                     state='none'
                     if ( word in keywords ):
-                        this.add_token('keyword',word)
+                        this.add_token('keyword',word,position_str)
                     else:
-                        this.add_token('identifier',word)
+                        this.add_token('identifier',word,position_str)
                     word=''
 
             if ( state == 'integerConstant' ):
@@ -65,7 +68,7 @@ class jack_tokenizer:
                 else:
                     # end of the integerConstant
                     state='none'
-                    this.add_token('integerConstant',word)
+                    this.add_token('integerConstant',word,position_str)
             
             # special case for / symbol
             # if the previous char was a slash and is not followed be another / or *
@@ -74,7 +77,7 @@ class jack_tokenizer:
             if ( state == '/' ):
                 if( c!='/' and c!='*' ):
                     state='none'
-                    this.add_token('symbol','/')
+                    this.add_token('symbol','/',position_str)
                     
             
                         
@@ -89,7 +92,7 @@ class jack_tokenizer:
                 # / symbol is managed separately in the comments parsing part
                 # because if followed by another / or a * it's not a symbol
                 if ( (c in symbols) and not c=='/' ):
-                    this.add_token('symbol',c)
+                    this.add_token('symbol',c,position_str)
                 
                 # maybe we have an identifier or a keyword
                 if ( c.isalpha() or c=='_' ):
@@ -124,7 +127,7 @@ class jack_tokenizer:
             
             elif ( state == 'StringConstant' ):
                 if ( c == '"' ):
-                    this.add_token('stringConstant',word)
+                    this.add_token('stringConstant',word,position_str)
                     state='none'
                     word=''
                 else:
@@ -143,6 +146,7 @@ class jack_tokenizer:
 
     def __init__(self,file):
         with open(file) as fp:
+            self.file=file
             self.fp=fp
             self.read_data = fp.read()
             self.tokens=[]
@@ -174,7 +178,13 @@ class jack_tokenizer:
             this.cursor=this.cursor+1
         else:
             raise MyException('advance called while hosMoreTokens is false')
-    
+
+    def backoff(this):
+        if( this.cursor>0 ):
+            this.cursor=this.cursor-1
+        else:
+            raise MyException('backoff called while cursor at 0')
+            
     def tokenType(this):
         token_type=this.tokens[this.cursor][0]
         if ( token_type=='integerConstant'):
@@ -192,7 +202,7 @@ class jack_tokenizer:
     
     def symbol(this):
         if (this.tokenType()!='SYMBOL'):
-            raise MyException("symbol called on non symbol token")
+            raise MyException(f'symbol called on non symbol token, at {this.tokens[this.cursor][2]}')
         else:
             return this.tokens[this.cursor][1]        
 
@@ -215,6 +225,10 @@ class jack_tokenizer:
             return this.tokens[this.cursor][1] 
             
 class MyException(Exception):
+    # def __init__(self, expression):
+        # self.expression = expression
+    # def __str__(self):
+        # return "Zobi!"
     pass
 
        
