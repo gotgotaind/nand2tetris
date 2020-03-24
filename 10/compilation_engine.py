@@ -119,7 +119,175 @@ class compilation_engine:
         else:
             raise MyException("Expected ; at the end of class variable definition at "+f'{self.tok.tokens[self.tok.cursor][2]}')        
 
-                    
+    def compile_var_dec(self):
+        self.tok.advance()
+        if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['VAR'] ):
+            self.write('<varDec>')
+            self.indent_level=self.indent_level+1
+            self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
+        else:
+            raise Not_var_dec()
+            
+        self.tok.advance()
+        self.compile_type()
+        
+        self.tok.advance()
+        if( self.tok.tokenType() == 'IDENTIFIER' ):
+            self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+        else:
+            raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')
+            
+        while ( True ):            
+            self.tok.advance()
+            if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() == ',' ):
+                self.write('<symbol> , </symbol>')
+            else:
+                self.tok.backoff()
+                break
+            self.tok.advance()
+            if( self.tok.tokenType() == 'IDENTIFIER' ):
+                self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+            else:
+                raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')                
+
+        self.tok.advance()
+        if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() == ';' ):
+            self.write('<symbol> ; </symbol>')
+            self.indent_level=self.indent_level-1
+            self.write('</varDec>')            
+        else:
+            raise MyException("Expected ; at the end of class variable definition at "+f'{self.tok.tokens[self.tok.cursor][2]}')   
+
+    def compile_identifier():
+        self.tok.advance()
+        if( self.tok.tokenType() == 'IDENTIFIER' ):
+            self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+        else:
+            raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}') 
+            
+            
+    def compileIf(self):
+        statement=self.tok.keyWord().lower()
+        self.write(f'<{statement}Statement>')
+        self.indent_level=self.indent_level+1        
+        self.write(f'<keyword> {statement} </keyword>')
+        
+        self.tok.advance()
+        self.compile_symbol('(')
+
+        self.compile_expression()
+
+        self.tok.advance()
+        self.compile_symbol(')')
+
+        self.tok.advance()
+        self.compile_symbol('{')
+
+        self.compile_statements()
+
+        self.tok.advance()
+        self.compile_symbol('}')        
+
+        self.tok.advance()
+        if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in 'ELSE' ):
+            self.write(f'<keyword> else </keyword>')
+            self.tok.advance()
+            self.compile_symbol('{')
+
+            self.compile_statements()
+
+            self.tok.advance()
+            self.compile_symbol('}')               
+        else:
+            self.tok.backoff()
+                
+        
+        self.indent_level=self.indent_level-1
+        self.write(f'/<{statement}Statement>')     
+
+    def compileLet(self):
+        statement=self.tok.keyWord().lower()
+        self.write(f'<{statement}Statement>')
+        self.indent_level=self.indent_level+1        
+        self.write(f'<keyword> {statement} </keyword>')
+
+        self.compile_identifier()  
+
+        self.tok.advance()
+        if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in '[' ):
+            self.write(f'<symbol> [ </symbol>')
+            self.compile_expression()
+            self.tok.advance()
+            self.compile_symbol(']')   
+        else:
+            self.tok.backoff()
+            
+        self.tok.advance()
+        self.compile_symbol('=')   
+        self.compile_expression()                
+        self.tok.advance()
+        self.compile_symbol(';')  
+        
+        self.indent_level=self.indent_level-1
+        self.write(f'/<{statement}Statement>')     
+
+    def compileWhile(self):
+        statement=self.tok.keyWord().lower()
+        self.write(f'<{statement}Statement>')
+        self.indent_level=self.indent_level+1        
+        self.write(f'<keyword> {statement} </keyword>')
+
+        self.tok.advance()
+        self.compile_symbol('(')   
+
+        self.compile_expression()
+
+        self.tok.advance()
+        self.compile_symbol(')')   
+
+            
+        self.tok.advance()
+        self.compile_symbol('{')   
+        self.compile_statements()                
+        self.tok.advance()
+        self.compile_symbol('}')  
+        
+        self.indent_level=self.indent_level-1
+        self.write(f'/<{statement}Statement>')    
+        
+    def compile_statement(self):
+    
+    
+        self.tok.advance()
+        if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord()=='IF' ):
+            self.compileIf()
+        elif( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord()=='LET' ):
+            self.compileLet()
+        elif( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord()=='WHILE' ):
+            self.compileWhile()            
+        elif( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord()=='DO' ):
+            self.compileDo()
+        elif( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord()=='RETURN' ):
+            self.compileReturn()
+        else:
+            raise Not_statement()
+
+
+
+    def compile_statements(self):
+        self.write('<statements>')
+        self.indent_level=self.indent_level+1
+
+        while ( True ):
+            try:
+                self.compile_statement()
+            except Not_statement:
+                self.tok.backoff()
+                break        
+        self.indent_level=self.indent_level-1
+        self.write('</statements>')  
+
+                
     def compile_subroutine(self):
         self.tok.advance()
         if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['CONSTRUCTOR','FUNCTION','METHOD'] ):
@@ -142,6 +310,7 @@ class compilation_engine:
         self.tok.advance()
         self.compile_symbol('(')
 
+        #compile parameterList
         self.write('<parameterList>')
         self.indent_level=self.indent_level+1
             
@@ -170,13 +339,38 @@ class compilation_engine:
         self.indent_level=self.indent_level-1
         self.write('</parameterList>')           
         self.compile_symbol(')')        
- 
-            
+
+        # compile subroutineBody
+        self.write('<subroutineBody>')
+        self.indent_level=self.indent_level+1
+        self.tok.advance()
+        self.compile_symbol('{')
+        
+        while ( True ):
+            try:
+                self.compile_var_dec()
+            except Not_var_dec:
+                self.tok.backoff()
+                break
+
+        self.compile_statements()        
+                
+        self.tok.advance()
+        self.compile_symbol('}')
+        self.indent_level=self.indent_level-1        
+        self.write('</subroutineBody>')
+        
 class MyException(Exception):
     pass
     
 class Not_class_var_dec(Exception):
     pass
+
+class Not_var_dec(Exception):
+    pass
     
 class Not_subroutine(Exception):
+    pass
+
+class Not_statement(Exception):
     pass
