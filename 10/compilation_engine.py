@@ -393,7 +393,7 @@ class compilation_engine:
         except Not_term:
             raise Not_expression
             
-        while ( true ):
+        while ( True ):
             try:
                 self.compile_op()
                 self.compile_term()
@@ -421,9 +421,57 @@ class compilation_engine:
             self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
             self.indent_level=self.indent_level-1
             self.write('</term>')
+        elif( self.tok.tokenType() == 'IDENTIFIER' ):
+            hack_identifier=self.tok.identifier()
+            self.tok.advance()
+            if ( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() == '[' ):
+                #varname [ expression ]
+                self.tok.backoff()
+                self.write('<term>')
+                self.indent_level=self.indent_level+1
+                self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                self.tok.advance()
+                self.write(f'<symbol> [ </symbol>')
+                self.compile_expression()
+                self.tok.advance()
+                self.compile_symbol(']')  
+                self.indent_level=self.indent_level-1
+                self.write('</term>')
+            elif ( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ['(','.'] ):
+                #subroutinecall
+                self.tok.backoff()
+                self.tok.backoff()
+                self.write('<term>')
+                self.indent_level=self.indent_level+1
+                self.compile_subroutine_call()
+                self.indent_level=self.indent_level-1
+                self.write('</term>')
+            else:
+                self.tok.backoff()
+                self.write('<term>')
+                self.indent_level=self.indent_level+1
+                self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                self.indent_level=self.indent_level-1
+                self.write('</term>')
+        elif ( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ['-','~'] ):
+            self.write('<term>')
+            self.indent_level=self.indent_level+1        
+            self.write(f'<symbol> {self.tok.symbol()} </symbol>')
+            self.compile_term()
+            self.indent_level=self.indent_level-1
+            self.write('</term>')
         else:
             raise Not_term()    
-        
+
+
+    def compile_op(self):
+        self.tok.advance()
+        if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ['+','-','*','/','&','|','<','>','='] ):
+            self.write(f'<symbol> {self.tok.symbol()} </symbol>')        
+        else:
+            raise Not_op(f"Expected '+','-','*','/','&','|','<','>' or '=' at "+f'{self.tok.tokens[self.tok.cursor][2]}')       
+    
+    
 class MyException(Exception):
     pass
     
@@ -440,4 +488,10 @@ class Not_statement(Exception):
     pass
     
 class Not_expression(Exception):
+    pass
+    
+class Not_op(Exception):
+    pass
+    
+class Not_term(Exception):
     pass
