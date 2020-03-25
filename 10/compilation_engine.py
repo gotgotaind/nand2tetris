@@ -158,12 +158,7 @@ class compilation_engine:
         else:
             raise MyException("Expected ; at the end of class variable definition at "+f'{self.tok.tokens[self.tok.cursor][2]}')   
 
-    def compile_identifier():
-        self.tok.advance()
-        if( self.tok.tokenType() == 'IDENTIFIER' ):
-            self.write(f'<identifier> {self.tok.identifier()} </identifier>')
-        else:
-            raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}') 
+
             
             
     def compileIf(self):
@@ -210,7 +205,8 @@ class compilation_engine:
         self.write(f'<{statement}Statement>')
         self.indent_level=self.indent_level+1        
         self.write(f'<keyword> {statement} </keyword>')
-
+        
+        self.tok.advance()
         self.compile_identifier()  
 
         self.tok.advance()
@@ -251,6 +247,37 @@ class compilation_engine:
         self.compile_statements()                
         self.tok.advance()
         self.compile_symbol('}')  
+        
+        self.indent_level=self.indent_level-1
+        self.write(f'/<{statement}Statement>')    
+
+    def compileDo(self):
+        statement=self.tok.keyWord().lower()
+        self.write(f'<{statement}Statement>')
+        self.indent_level=self.indent_level+1        
+        self.write(f'<keyword> {statement} </keyword>')
+
+        self.compile_subroutine_call()
+             
+        self.tok.advance()
+        self.compile_symbol(';')  
+        
+        self.indent_level=self.indent_level-1
+        self.write(f'/<{statement}Statement>')    
+
+    def compileReturn(self):
+        statement=self.tok.keyWord().lower()
+        self.write(f'<{statement}Statement>')
+        self.indent_level=self.indent_level+1        
+        self.write(f'<keyword> {statement} </keyword>')
+
+        try:
+            compile_expression()
+        except Not_expression:
+            self.tok.backoff()
+             
+        self.tok.advance()
+        self.compile_symbol(';')  
         
         self.indent_level=self.indent_level-1
         self.write(f'/<{statement}Statement>')    
@@ -359,6 +386,43 @@ class compilation_engine:
         self.compile_symbol('}')
         self.indent_level=self.indent_level-1        
         self.write('</subroutineBody>')
+
+    def compile_expression(self):
+        try:
+            self.compile_term()
+        except Not_term:
+            raise Not_expression
+            
+        while ( true ):
+            try:
+                self.compile_op()
+                self.compile_term()
+            except Not_op:
+                self.tok.backoff()
+                break
+                
+    def compile_term(self):
+        self.tok.advance()
+        if( self.tok.tokenType() == 'INT_CONST'):
+            self.write('<term>')
+            self.indent_level=self.indent_level+1
+            self.write(f'<integerConstant> {self.tok.intVal()} </integerConstant>')
+            self.indent_level=self.indent_level-1
+            self.write('</term>')
+        elif( self.tok.tokenType() == 'STRING_CONST'):
+            self.write('<term>')
+            self.indent_level=self.indent_level+1
+            self.write(f'<stringConstant> {self.tok.stringVal()} </stringConstant>')
+            self.indent_level=self.indent_level-1
+            self.write('</term>')
+        elif( self.tok.tokenType() =='KEYWORD' and self.tok.keyWord() in ['TRUE','FALSE','NULL','THIS'] ):
+            self.write('<term>')
+            self.indent_level=self.indent_level+1
+            self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
+            self.indent_level=self.indent_level-1
+            self.write('</term>')
+        else:
+            raise Not_term()    
         
 class MyException(Exception):
     pass
@@ -373,4 +437,7 @@ class Not_subroutine(Exception):
     pass
 
 class Not_statement(Exception):
+    pass
+    
+class Not_expression(Exception):
     pass
