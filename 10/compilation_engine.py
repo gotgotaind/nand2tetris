@@ -198,7 +198,7 @@ class compilation_engine:
                 
         
         self.indent_level=self.indent_level-1
-        self.write(f'/<{statement}Statement>')     
+        self.write(f'</{statement}Statement>')     
 
     def compileLet(self):
         statement=self.tok.keyWord().lower()
@@ -225,7 +225,7 @@ class compilation_engine:
         self.compile_symbol(';')  
         
         self.indent_level=self.indent_level-1
-        self.write(f'/<{statement}Statement>')     
+        self.write(f'</{statement}Statement>')     
 
     def compileWhile(self):
         statement=self.tok.keyWord().lower()
@@ -249,7 +249,7 @@ class compilation_engine:
         self.compile_symbol('}')  
         
         self.indent_level=self.indent_level-1
-        self.write(f'/<{statement}Statement>')    
+        self.write(f'</{statement}Statement>')    
 
     def compileDo(self):
         statement=self.tok.keyWord().lower()
@@ -263,7 +263,7 @@ class compilation_engine:
         self.compile_symbol(';')  
         
         self.indent_level=self.indent_level-1
-        self.write(f'/<{statement}Statement>')    
+        self.write(f'</{statement}Statement>')    
 
     def compileReturn(self):
         statement=self.tok.keyWord().lower()
@@ -271,16 +271,18 @@ class compilation_engine:
         self.indent_level=self.indent_level+1        
         self.write(f'<keyword> {statement} </keyword>')
 
-        try:
-            compile_expression()
-        except Not_expression:
-            self.tok.backoff()
-             
+
         self.tok.advance()
-        self.compile_symbol(';')  
-        
+        if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ';' ):
+            self.compile_symbol(';') 
+        else:
+            self.tok.backoff()
+            self.compile_expression()
+            self.tok.advance()
+            self.compile_symbol(';')  
+                     
         self.indent_level=self.indent_level-1
-        self.write(f'/<{statement}Statement>')    
+        self.write(f'</{statement}Statement>')    
         
     def compile_statement(self):
     
@@ -357,7 +359,7 @@ class compilation_engine:
             
             self.tok.advance()
             try:
-                self_compile_symbol(',')
+                self.compile_symbol(',')
             except MyException:
                 self.tok.backoff()
                 break
@@ -386,12 +388,14 @@ class compilation_engine:
         self.compile_symbol('}')
         self.indent_level=self.indent_level-1        
         self.write('</subroutineBody>')
-
+        self.indent_level=self.indent_level-1        
+        self.write('</subroutineDec>')
+        
     def compile_expression(self):
-        try:
-            self.compile_term()
-        except Not_term:
-            raise Not_expression
+        self.write('<expression>')
+        self.indent_level=self.indent_level+1        
+        self.compile_term()
+
             
         while ( True ):
             try:
@@ -400,6 +404,9 @@ class compilation_engine:
             except Not_op:
                 self.tok.backoff()
                 break
+        self.indent_level=self.indent_level-1        
+        self.write('</expression>')
+
                 
     def compile_term(self):
         self.tok.advance()
@@ -453,6 +460,16 @@ class compilation_engine:
                 self.write(f'<identifier> {self.tok.identifier()} </identifier>')
                 self.indent_level=self.indent_level-1
                 self.write('</term>')
+        elif ( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol()=='(' ):
+            #( expression )
+            self.write('<term>')
+            self.indent_level=self.indent_level+1 
+            self.compile_symbol('(')
+            self.compile_expression()
+            self.tok.advance()
+            self.compile_symbol(')')
+            self.indent_level=self.indent_level-1
+            self.write('</term>')            
         elif ( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ['-','~'] ):
             self.write('<term>')
             self.indent_level=self.indent_level+1        
@@ -471,7 +488,54 @@ class compilation_engine:
         else:
             raise Not_op(f"Expected '+','-','*','/','&','|','<','>' or '=' at "+f'{self.tok.tokens[self.tok.cursor][2]}')       
     
-    
+    def compile_subroutine_call(self):
+        self.tok.advance()
+        self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+        self.tok.advance()
+        self.write(f'<symbol> {self.tok.symbol()} </symbol>')
+        if( self.tok.symbol() == '(' ):
+            self.compile_expression_list()
+            self.tok.advance()
+            self.compile_symbol(')')
+        elif( self.tok.symbol() == '.' ):
+            self.tok.advance()
+            if( self.tok.tokenType() == 'IDENTIFIER' ):
+                self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+            else:
+                raise Not_op(f"Expected an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')
+            self.tok.advance()
+            self.compile_symbol('(')
+            self.compile_expression_list()
+            self.tok.advance()
+            self.compile_symbol(')')
+
+    def compile_expression_list(self):
+        
+        self.write('<expressionList>')
+        self.indent_level=self.indent_level+1    
+        self.tok.advance()           
+        if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() == ')' ):
+            self.indent_level=self.indent_level-1
+            self.write('</expressionList>') 
+            self.tok.backoff()
+            return
+            
+        self.compile_expression()
+        
+        while( True ):
+            self.tok.advance()
+            if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() == ',' ):
+                self.compile_symbol(',')
+                self.compile_expression()
+            else:
+                self.tok.backoff()
+                break
+        
+        self.indent_level=self.indent_level-1         
+        self.write('</expressionList>')
+            
+        
+        
 class MyException(Exception):
     pass
     
