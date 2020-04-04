@@ -40,9 +40,9 @@ print(f"The following files will be compiled : {files_list}")
 
 for file in files_list:
     tok=jack_tokenizer(file)
-    ofile=os.path.splitext(file)[0]+".my.xml"
+    ofile=os.path.splitext(file)[0]+".xml"
     print(f"The output file will be : {ofile}")
-    with open(ofile,'w') as ofp:
+    with open(ofile,'w',encoding='utf-8') as ofp:
         ce=compilation_engine(tok,ofp)
         ce.compile_class()
         # while( tok.hasMoreTokens() ):
