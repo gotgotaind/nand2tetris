@@ -1,4 +1,4 @@
-kinds=['STATIC','FIELD','ARG','VAR']
+kinds=['STATIC','FIELD','ARG','VAR','CLASS']
 
 class symbol_table:
     def __init__(self):

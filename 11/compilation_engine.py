@@ -1,7 +1,9 @@
 class compilation_engine:
-    def __init__(self,tok,ofp):
+    def __init__(self,tok,st,vw,ofp):
         self.tok=tok
+        self.st=st
         self.ofp=ofp
+        self.vw=vw
         self.indent_level=0
         
     def write(self,msg):
@@ -18,6 +20,7 @@ class compilation_engine:
             self.tok.advance()    
             if( self.tok.tokenType() == 'IDENTIFIER' ):
                 self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                self.st.define(self.tok.identifier(),'CLASS','CLASS')
                 self.tok.advance()
                 if( self.tok.symbol() == '{' ):
                     self.write('<symbol> { </symbol>')

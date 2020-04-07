@@ -13,6 +13,8 @@ import os
 import glob
 from jack_tokenizer import jack_tokenizer
 from compilation_engine import compilation_engine
+from symbol_table import symbol_table
+from vm_writer import vm_writer
 
 # if no argument is given set path as current directory
 if len(sys.argv) == 1:
@@ -41,9 +43,11 @@ print(f"The following files will be compiled : {files_list}")
 for file in files_list:
     tok=jack_tokenizer(file)
     ofile=os.path.splitext(file)[0]+".xml"
-    print(f"The output file will be : {ofile}")
+    print(f"The xml output file will be : {ofile}")
     with open(ofile,'w',encoding='utf-8') as ofp:
-        ce=compilation_engine(tok,ofp)
+        st=symbol_table()
+        vw=vm_writer(file)
+        ce=compilation_engine(tok,st,vw,ofp)
         ce.compile_class()
         # while( tok.hasMoreTokens() ):
             # a=tok.tokenType()        
