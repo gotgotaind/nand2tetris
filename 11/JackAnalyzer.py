@@ -45,10 +45,13 @@ for file in files_list:
     ofile=os.path.splitext(file)[0]+".xml"
     print(f"The xml output file will be : {ofile}")
     with open(ofile,'w',encoding='utf-8') as ofp:
-        st=symbol_table()
-        vw=vm_writer(file)
-        ce=compilation_engine(tok,st,vw,ofp)
-        ce.compile_class()
+        vm_file=os.path.splitext(file)[0]+".vm"
+        with open(vm_file,'w') as vfp:
+            print(f"The vm output file will be : {vm_file}")
+            st=symbol_table()
+            vw=vm_writer(vfp)
+            ce=compilation_engine(tok,st,vw,ofp)
+            ce.compile_class()
         # while( tok.hasMoreTokens() ):
             # a=tok.tokenType()        
             # ofp.write(f'toto {a}\n')

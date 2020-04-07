@@ -36,3 +36,10 @@ class symbol_table:
             if ( kind in ('ARG','VAR')):
                 del self.symbol[name]
                 self.kind_index[kind]=self.kind_index[kind]-1
+                
+    def get_class(self):
+        for name in self.symbol:
+            kind=self.symbol[name]['kind']
+            if ( kind == 'CLASS'):
+                return name
+    

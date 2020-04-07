@@ -326,39 +326,48 @@ class compilation_engine:
             self.write('<subroutineDec>')
             self.indent_level=self.indent_level+1
             self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
+            sub_type=self.tok.keyWord().lower()
         else:
             raise Not_subroutine()
         self.tok.advance()
         # VOID or Type
         if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['INT','CHAR','BOOLEAN','VOID'] ):
+            sub_returns=self.tok.keyWord().lower()
             self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
         elif( self.tok.tokenType() == 'IDENTIFIER' ):
+            sub_returns=self.tok.identifier()
             self.write(f'<identifier> {self.tok.identifier()} </identifier>')      
         else:
             raise MyException(f"Was expecting a type or VOID at "+f'{self.tok.tokens[self.tok.cursor][2]}')
 
         self.tok.advance()
         self.compile_identifier()
+        sub_name=self.tok.identifier()
+        
         self.tok.advance()
         self.compile_symbol('(')
 
         #compile parameterList
         self.write('<parameterList>')
         self.indent_level=self.indent_level+1
-            
+        
+        sub_param_nb=0
         while ( True ):
             self.tok.advance()
             #  if Type
             if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['INT','CHAR','BOOLEAN'] ):
                 self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
+                sub_param_nb=sub_param_nb+1
             elif( self.tok.tokenType() == 'IDENTIFIER' ):
-                self.write(f'<identifier> {self.tok.identifier()} </identifier>')      
+                self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                sub_param_nb=sub_param_nb+1                
             else:
                 self.tok.backoff()
                 break
                 
             self.tok.advance()
             self.compile_identifier()
+            
             
             self.tok.advance()
             try:
@@ -369,9 +378,12 @@ class compilation_engine:
         
         self.tok.advance()
         self.indent_level=self.indent_level-1
-        self.write('</parameterList>')           
+        self.write('</parameterList>')
+        self.vw.write_function(self.st.get_class()+'.'+sub_name,sub_param_nb)
         self.compile_symbol(')')        
 
+        
+        
         # compile subroutineBody
         self.write('<subroutineBody>')
         self.indent_level=self.indent_level+1
