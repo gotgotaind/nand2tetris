@@ -414,8 +414,9 @@ class compilation_engine:
             
         while ( True ):
             try:
-                self.compile_op()
+                op=self.compile_op()
                 self.compile_term()
+                self.vw.write_arithmetic(op)
             except Not_op:
                 self.tok.backoff()
                 break
@@ -429,6 +430,7 @@ class compilation_engine:
             self.write('<term>')
             self.indent_level=self.indent_level+1
             self.write(f'<integerConstant> {self.tok.intVal()} </integerConstant>')
+            self.vw.write_push('constant',self.tok.intVal())
             self.indent_level=self.indent_level-1
             self.write('</term>')
         elif( self.tok.tokenType() == 'STRING_CONST'):
@@ -500,6 +502,7 @@ class compilation_engine:
         self.tok.advance()
         if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ['+','-','*','/','&','|','<','>','='] ):
             c=self.tok.symbol()
+            op=self.tok.symbol()
             if( c == '>' ):
                 c='&gt;'
             elif( c == '<'):
@@ -507,7 +510,8 @@ class compilation_engine:
             elif( c == '&' ):
                 c='&amp;'
                             
-            self.write(f'<symbol> {c} </symbol>')        
+            self.write(f'<symbol> {c} </symbol>')
+            return op
         else:
             raise Not_op(f"Expected '+','-','*','/','&','|','<','>' or '=' at "+f'{self.tok.tokens[self.tok.cursor][2]}')       
     

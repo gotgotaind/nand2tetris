@@ -1,5 +1,12 @@
 import os
 
+opd={
+    '+':'add',
+    '-':'neg',
+    '*':'call Math.multiply 2'
+}
+
+
 class vm_writer:
 
     def __init__(self,vfp):
@@ -11,7 +18,8 @@ class vm_writer:
     def write_pop(self,segment,index):
         self.vfp.write(f'pop {segment} {index}\n')        
         
-    def write_arithmetic(self,command):
+    def write_arithmetic(self,op):
+        command=opd[op]
         self.vfp.write(f'{command}\n')
         
     def write_label(self,label):
