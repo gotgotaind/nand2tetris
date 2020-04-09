@@ -503,6 +503,7 @@ class compilation_engine:
         if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ['+','-','*','/','&','|','<','>','='] ):
             c=self.tok.symbol()
             op=self.tok.symbol()
+            
             if( c == '>' ):
                 c='&gt;'
             elif( c == '<'):
@@ -517,27 +518,32 @@ class compilation_engine:
     
     def compile_subroutine_call(self):
         self.tok.advance()
+        sub_name_part1=self.tok.identifier()
         self.write(f'<identifier> {self.tok.identifier()} </identifier>')
         self.tok.advance()
         self.write(f'<symbol> {self.tok.symbol()} </symbol>')
         if( self.tok.symbol() == '(' ):
-            self.compile_expression_list()
+            el_length=self.compile_expression_list()
+            sub_name=self.st.get_class()+'.'+sub_name_part1
             self.tok.advance()
             self.compile_symbol(')')
         elif( self.tok.symbol() == '.' ):
             self.tok.advance()
             if( self.tok.tokenType() == 'IDENTIFIER' ):
                 self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                sub_name=sub_name_part1+'.'+self.tok.identifier()
             else:
                 raise Not_op(f"Expected an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')
             self.tok.advance()
             self.compile_symbol('(')
-            self.compile_expression_list()
+            el_length=self.compile_expression_list()
             self.tok.advance()
             self.compile_symbol(')')
+        self.vw.write_call(sub_name,el_length)
 
     def compile_expression_list(self):
         
+        el_length=0
         self.write('<expressionList>')
         self.indent_level=self.indent_level+1    
         self.tok.advance()           
@@ -545,21 +551,23 @@ class compilation_engine:
             self.indent_level=self.indent_level-1
             self.write('</expressionList>') 
             self.tok.backoff()
-            return
+            return el_length
         self.tok.backoff()    
         self.compile_expression()
-        
+        el_length=el_length+1
         while( True ):
             self.tok.advance()
             if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() == ',' ):
                 self.compile_symbol(',')
                 self.compile_expression()
+                el_length=el_length+1
             else:
                 self.tok.backoff()
                 break
         
         self.indent_level=self.indent_level-1         
         self.write('</expressionList>')
+        return el_length
             
         
         

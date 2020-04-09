@@ -1,10 +1,6 @@
 import os
 
-opd={
-    '+':'add',
-    '-':'neg',
-    '*':'call Math.multiply 2'
-}
+
 
 
 class vm_writer:
@@ -19,6 +15,17 @@ class vm_writer:
         self.vfp.write(f'pop {segment} {index}\n')        
         
     def write_arithmetic(self,op):
+        opd={
+        '+':'add',
+        '-':'neg',
+        '*':'call Math.multiply 2',        
+        '/':'call Math.divide 2',
+        '&':'and',
+        '|':'or',
+        '<':'lt',
+        '>':'gt',
+        '=':'eq',
+        }
         command=opd[op]
         self.vfp.write(f'{command}\n')
         
