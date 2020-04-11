@@ -385,7 +385,7 @@ class compilation_engine:
         self.tok.advance()
         self.indent_level=self.indent_level-1
         self.write('</parameterList>')
-        self.vw.write_function(self.st.get_class()+'.'+sub_name,sub_param_nb)
+        
         self.compile_symbol(')')        
 
         
@@ -396,13 +396,16 @@ class compilation_engine:
         self.tok.advance()
         self.compile_symbol('{')
         
+        sub_nlocals=0
         while ( True ):
             try:
                 self.compile_var_dec()
+                sub_nlocals=sub_nlocals+1
             except Not_var_dec:
                 self.tok.backoff()
                 break
-
+                
+        self.vw.write_function(self.st.get_class()+'.'+sub_name,sub_nlocals)
         self.compile_statements()        
                 
         self.tok.advance()
