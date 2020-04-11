@@ -261,7 +261,9 @@ class compilation_engine:
         self.write(f'<keyword> {statement} </keyword>')
 
         self.compile_subroutine_call()
-             
+        
+        # If it's a fo function, we always get rid of the returned value?
+        self.vw.write_pop('temp',0)
         self.tok.advance()
         self.compile_symbol(';')  
         
@@ -277,7 +279,10 @@ class compilation_engine:
 
         self.tok.advance()
         if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ';' ):
-            self.compile_symbol(';') 
+            self.compile_symbol(';')
+            # if there is nothing to return (void function), we must still push
+            # something into the stack.
+            self.vw.write_push('constant',0)
         else:
             self.tok.backoff()
             self.compile_expression()
@@ -285,7 +290,8 @@ class compilation_engine:
             self.compile_symbol(';')  
                      
         self.indent_level=self.indent_level-1
-        self.write(f'</{statement}Statement>')    
+        self.write(f'</{statement}Statement>')
+        self.vw.write_return()        
         
     def compile_statement(self):
     

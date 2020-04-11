@@ -44,8 +44,8 @@ class vm_writer:
     def write_function(self,name,nlocals):
         self.vfp.write(f'function {name} {nlocals}\n')
         
-    def write_return():
+    def write_return(self):
         self.vfp.write('return\n')
         
-    def close():
+    def close(self):
         self.vfp.close()
