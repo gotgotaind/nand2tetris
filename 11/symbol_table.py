@@ -1,9 +1,10 @@
-kinds=['STATIC','FIELD','ARG','VAR','CLASS']
+kinds=['static','FIELD','argument','VAR']
 
 class symbol_table:
     def __init__(self):
         self.symbol={}
         self.kind_index={}
+        self.class_name='none'
         for kind in kinds:
             self.kind_index[kind]=0
         
@@ -38,8 +39,8 @@ class symbol_table:
                 self.kind_index[kind]=self.kind_index[kind]-1
                 
     def get_class(self):
-        for name in self.symbol:
-            kind=self.symbol[name]['kind']
-            if ( kind == 'CLASS'):
-                return name
+        return class_name
+        
+    def set_class(self,name):
+        self.class_name=name
     

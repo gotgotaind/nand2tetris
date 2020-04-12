@@ -25,6 +25,7 @@ class vm_writer:
         '<':'lt',
         '>':'gt',
         '=':'eq',
+        '~':'not'
         }
         command=opd[op]
         self.vfp.write(f'{command}\n')

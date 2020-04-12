@@ -20,7 +20,7 @@ class compilation_engine:
             self.tok.advance()    
             if( self.tok.tokenType() == 'IDENTIFIER' ):
                 self.write(f'<identifier> {self.tok.identifier()} </identifier>')
-                self.st.define(self.tok.identifier(),'CLASS','CLASS')
+                self.st.set_class(self.tok.identifier())
                 self.tok.advance()
                 if( self.tok.symbol() == '{' ):
                     self.write('<symbol> { </symbol>')
@@ -72,7 +72,9 @@ class compilation_engine:
             
     def compile_identifier(self):            
         if( self.tok.tokenType() == 'IDENTIFIER' ):
-            self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+            identifier=self.tok.identifier()
+            self.write(f'<identifier> {identifier} </identifier>')
+            return identifier
         else:
             raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')  
             
@@ -210,7 +212,7 @@ class compilation_engine:
         self.write(f'<keyword> {statement} </keyword>')
         
         self.tok.advance()
-        self.compile_identifier()  
+        id=self.compile_identifier()  
 
         self.tok.advance()
         if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in '[' ):
@@ -219,6 +221,7 @@ class compilation_engine:
             self.tok.advance()
             self.compile_symbol(']')   
         else:
+            is_array=False
             self.tok.backoff()
             
         self.tok.advance()
@@ -226,6 +229,11 @@ class compilation_engine:
         self.compile_expression()                
         self.tok.advance()
         self.compile_symbol(';')  
+        
+        id_kind=self.st.kind_of(id)
+        id_index=self.st.index_of(id)
+        self.vw.write_push(id_kind,id_index)
+        
         
         self.indent_level=self.indent_level-1
         self.write(f'</{statement}Statement>')     
@@ -497,10 +505,13 @@ class compilation_engine:
             self.indent_level=self.indent_level-1
             self.write('</term>')            
         elif ( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in ['-','~'] ):
+            unary_op=self.tok.symbol()
+            
             self.write('<term>')
             self.indent_level=self.indent_level+1        
             self.write(f'<symbol> {self.tok.symbol()} </symbol>')
             self.compile_term()
+            self.vw.write_arithmetic(unary_op)
             self.indent_level=self.indent_level-1
             self.write('</term>')
         else:
