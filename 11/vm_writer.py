@@ -9,9 +9,14 @@ class vm_writer:
         self.vfp=vfp
             
     def write_push(self,segment,index):
+        if( segment == 'var' ):
+            segment='local'
         self.vfp.write(f'push {segment} {index}\n')
         
     def write_pop(self,segment,index):
+        if( segment == 'var' ):
+            segment='local'
+        
         self.vfp.write(f'pop {segment} {index}\n')        
         
     def write_arithmetic(self,op):
@@ -47,6 +52,9 @@ class vm_writer:
         
     def write_return(self):
         self.vfp.write('return\n')
+
+    def write_comment(self,comment):
+        self.vfp.write('comment : {comment}\n')
         
     def close(self):
         self.vfp.close()

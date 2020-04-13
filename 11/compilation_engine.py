@@ -65,8 +65,10 @@ class compilation_engine:
     def compile_type(self):
         if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['INT','CHAR','BOOLEAN'] ):
             self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
+            return self.tok.keyWord().lower()
         elif( self.tok.tokenType() == 'IDENTIFIER' ):
-            self.write(f'<identifier> {self.tok.identifier()} </identifier>')      
+            self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+            return self.tok.identifier()
         else:
             raise MyException(f"Was expecting a type at "+f'{self.tok.tokens[self.tok.cursor][2]}')
             
@@ -125,33 +127,40 @@ class compilation_engine:
             raise MyException("Expected ; at the end of class variable definition at "+f'{self.tok.tokens[self.tok.cursor][2]}')        
 
     def compile_var_dec(self):
+        nvars=1
         self.tok.advance()
         if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['VAR'] ):
             self.write('<varDec>')
             self.indent_level=self.indent_level+1
             self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
+            kind=self.tok.keyWord().lower()
         else:
             raise Not_var_dec()
             
         self.tok.advance()
-        self.compile_type()
+        type=self.compile_type()
         
         self.tok.advance()
         if( self.tok.tokenType() == 'IDENTIFIER' ):
             self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+            name=self.tok.identifier()
         else:
             raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')
             
+        self.st.define(name,type,kind)
         while ( True ):            
             self.tok.advance()
             if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() == ',' ):
                 self.write('<symbol> , </symbol>')
+                nvars=nvars+1
             else:
                 self.tok.backoff()
                 break
             self.tok.advance()
             if( self.tok.tokenType() == 'IDENTIFIER' ):
                 self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                name=self.tok.identifier()
+                self.st.define(name,type,kind)
             else:
                 raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')                
 
@@ -163,7 +172,7 @@ class compilation_engine:
         else:
             raise MyException("Expected ; at the end of class variable definition at "+f'{self.tok.tokens[self.tok.cursor][2]}')   
 
-
+        return nvars
             
             
     def compileIf(self):
@@ -232,7 +241,7 @@ class compilation_engine:
         
         id_kind=self.st.kind_of(id)
         id_index=self.st.index_of(id)
-        self.vw.write_push(id_kind,id_index)
+        self.vw.write_pop(id_kind,id_index)
         
         
         self.indent_level=self.indent_level-1
@@ -335,6 +344,7 @@ class compilation_engine:
 
                 
     def compile_subroutine(self):
+        self.st.start_subroutine()
         self.tok.advance()
         if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['CONSTRUCTOR','FUNCTION','METHOD'] ):
             self.write('<subroutineDec>')
@@ -372,16 +382,19 @@ class compilation_engine:
             if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['INT','CHAR','BOOLEAN'] ):
                 self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
                 sub_param_nb=sub_param_nb+1
+                type=self.tok.keyWord().lower()
             elif( self.tok.tokenType() == 'IDENTIFIER' ):
                 self.write(f'<identifier> {self.tok.identifier()} </identifier>')
                 sub_param_nb=sub_param_nb+1                
+                type=self.tok.identifier()
             else:
                 self.tok.backoff()
                 break
                 
             self.tok.advance()
-            self.compile_identifier()
+            name=self.compile_identifier()
             
+            self.st.define(name,type,'argument')
             
             self.tok.advance()
             try:
@@ -407,8 +420,8 @@ class compilation_engine:
         sub_nlocals=0
         while ( True ):
             try:
-                self.compile_var_dec()
-                sub_nlocals=sub_nlocals+1
+                nvars=self.compile_var_dec()
+                sub_nlocals=sub_nlocals+nvars
             except Not_var_dec:
                 self.tok.backoff()
                 break
@@ -459,7 +472,18 @@ class compilation_engine:
         elif( self.tok.tokenType() =='KEYWORD' and self.tok.keyWord() in ['TRUE','FALSE','NULL','THIS'] ):
             self.write('<term>')
             self.indent_level=self.indent_level+1
-            self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
+            word=self.tok.keyWord().lower()
+            self.write(f'<keyword> {word} </keyword>')
+            if ( word == 'true' ):
+                self.vw.write_push('constant',0)
+                self.vw.write_arithmetic('~')
+            elif ( word == 'false' ):
+                self.vw.write_push('constant',0)
+            elif ( word == 'null' ):
+                self.vw.write_push('constant',0)                
+            elif ( word == 'this' ):
+                self.vw.write_comment('what should we push when the term is this?')                 
+                
             self.indent_level=self.indent_level-1
             self.write('</term>')
         elif( self.tok.tokenType() == 'IDENTIFIER' ):
@@ -488,10 +512,13 @@ class compilation_engine:
                 self.indent_level=self.indent_level-1
                 self.write('</term>')
             else:
+                # simple var name?
                 self.tok.backoff()
                 self.write('<term>')
                 self.indent_level=self.indent_level+1
                 self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                name=self.tok.identifier()
+                self.vw.write_push(self.st.kind_of(name),self.st.index_of(name))
                 self.indent_level=self.indent_level-1
                 self.write('</term>')
         elif ( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol()=='(' ):
