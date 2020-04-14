@@ -92,16 +92,19 @@ class compilation_engine:
         if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in ['STATIC','FIELD'] ):
             self.write('<classVarDec>')
             self.indent_level=self.indent_level+1
-            self.write(f'<keyword> {self.tok.keyWord().lower()} </keyword>')
+            kind=self.tok.keyWord().lower()
+            self.write(f'<keyword> {kind} </keyword>')
         else:
             raise Not_class_var_dec()
             
         self.tok.advance()
-        self.compile_type()
+        type=self.compile_type()
         
         self.tok.advance()
         if( self.tok.tokenType() == 'IDENTIFIER' ):
-            self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+            name=self.tok.identifier()
+            self.write(f'<identifier> {name} </identifier>')
+            self.st.define(name,type,kind)
         else:
             raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')
             
@@ -114,7 +117,9 @@ class compilation_engine:
                 break
             self.tok.advance()
             if( self.tok.tokenType() == 'IDENTIFIER' ):
-                self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                name=self.tok.identifier()
+                self.write(f'<identifier> {name} </identifier>')
+                self.st.define(name,type,kind)
             else:
                 raise MyException(f"Was expecting an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')                
 
@@ -446,6 +451,14 @@ class compilation_engine:
                 break
                 
         self.vw.write_function(self.st.get_class()+'.'+sub_name,sub_nlocals)
+
+        if( sub_type == 'constructor' ):
+            nb_fields=self.st.get_class_nb_fields()
+            self.vw.write_push('constant',nb_fields)
+            self.vw.write_call('Memory.alloc',1)
+            # don't know why this one...
+            self.vw.write_pop('pointer',0)
+            
         self.compile_statements()        
                 
         self.tok.advance()
@@ -501,7 +514,8 @@ class compilation_engine:
             elif ( word == 'null' ):
                 self.vw.write_push('constant',0)                
             elif ( word == 'this' ):
-                self.vw.write_comment('what should we push when the term is this?')                 
+                #self.vw.write_comment('what should we push when the term is this?') 
+                self.vw.write_push('pointer',0)                
                 
             self.indent_level=self.indent_level-1
             self.write('</term>')
@@ -588,7 +602,15 @@ class compilation_engine:
         self.write(f'<identifier> {self.tok.identifier()} </identifier>')
         self.tok.advance()
         self.write(f'<symbol> {self.tok.symbol()} </symbol>')
+        
+        # special flag to be able to add one argument to the 
+        # argument number when it is an object method
+        # because the self/this is not explicitely in the argument list
+        additional_object_method_implied_argument=0
+        
         if( self.tok.symbol() == '(' ):
+            # so it would be a method of current object (this)
+            self.vw.write_push('pointer',0)
             el_length=self.compile_expression_list()
             sub_name=self.st.get_class()+'.'+sub_name_part1
             self.tok.advance()
@@ -596,13 +618,23 @@ class compilation_engine:
         elif( self.tok.symbol() == '.' ):
             self.tok.advance()
             if( self.tok.tokenType() == 'IDENTIFIER' ):
-                self.write(f'<identifier> {self.tok.identifier()} </identifier>')
-                sub_name=sub_name_part1+'.'+self.tok.identifier()
+                id=self.tok.identifier()
+                self.write(f'<identifier> {id} </identifier>')
+                kind_of_part1=self.st.kind_of(sub_name_part1)
+                if ( kind_of_part1 == 'NONE' ):
+                    # not an object method, but a class method or constructor
+                    sub_name=sub_name_part1+'.'+id
+                else:
+                    # object method, so must push object as first argument
+                    # and replace the object name by its class name ( type )
+                    self.vw.write_push(self.st.kind_of(sub_name_part1),self.st.index_of(sub_name_part1))
+                    sub_name=self.st.type_of(sub_name_part1)+'.'+id
+                    additional_object_method_implied_argument=1
             else:
                 raise Not_op(f"Expected an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')
             self.tok.advance()
             self.compile_symbol('(')
-            el_length=self.compile_expression_list()
+            el_length=self.compile_expression_list()+additional_object_method_implied_argument
             self.tok.advance()
             self.compile_symbol(')')
         self.vw.write_call(sub_name,el_length)

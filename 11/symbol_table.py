@@ -47,6 +47,9 @@ class symbol_table:
                 
     def get_class(self):
         return self.class_name
+
+    def get_class_nb_fields(self):
+        return self.kind_index['field']
         
     def set_class(self,name):
         self.class_name=name
