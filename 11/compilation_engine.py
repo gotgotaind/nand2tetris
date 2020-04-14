@@ -180,6 +180,9 @@ class compilation_engine:
         self.write(f'<{statement}Statement>')
         self.indent_level=self.indent_level+1        
         self.write(f'<keyword> {statement} </keyword>')
+
+        if_line=self.tok.get_line()
+
         
         self.tok.advance()
         self.compile_symbol('(')
@@ -189,6 +192,10 @@ class compilation_engine:
         self.tok.advance()
         self.compile_symbol(')')
 
+        self.vw.write_if('if_true_'+if_line)
+        self.vw.write_goto('if_false_'+if_line)
+        self.vw.write_label('if_true_'+if_line)
+        
         self.tok.advance()
         self.compile_symbol('{')
 
@@ -197,6 +204,9 @@ class compilation_engine:
         self.tok.advance()
         self.compile_symbol('}')        
 
+        self.vw.write_goto('if_end_'+if_line)
+        self.vw.write_label('if_false_'+if_line)        
+        
         self.tok.advance()
         if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in 'ELSE' ):
             self.write(f'<keyword> else </keyword>')
@@ -210,6 +220,7 @@ class compilation_engine:
         else:
             self.tok.backoff()
                 
+        self.vw.write_label('if_end_'+if_line)        
         
         self.indent_level=self.indent_level-1
         self.write(f'</{statement}Statement>')     
@@ -252,12 +263,17 @@ class compilation_engine:
         self.write(f'<{statement}Statement>')
         self.indent_level=self.indent_level+1        
         self.write(f'<keyword> {statement} </keyword>')
-
+        while_line=self.tok.get_line()
+        self.vw.write_label('while_start_'+while_line)
+       
         self.tok.advance()
         self.compile_symbol('(')   
 
         self.compile_expression()
 
+        self.vw.write_arithmetic('~')
+        self.vw.write_if('while_end_'+while_line)
+        
         self.tok.advance()
         self.compile_symbol(')')   
 
@@ -267,6 +283,9 @@ class compilation_engine:
         self.compile_statements()                
         self.tok.advance()
         self.compile_symbol('}')  
+        
+        self.vw.write_goto('while_start_'+while_line)
+        self.vw.write_label('while_end_'+while_line)
         
         self.indent_level=self.indent_level-1
         self.write(f'</{statement}Statement>')    

@@ -1,4 +1,5 @@
 import os
+import re
 
 debug=0
 symbols=['{','}','[',']','(',')','.',';',',','+','~','*','/','&','|','>','<','=','-']
@@ -225,7 +226,14 @@ class jack_tokenizer:
             raise MyException("stringVal called on non STRING_CONST token")
         else:
             return this.tokens[this.cursor][1] 
-            
+
+    def get_line(this):
+        #{this.file} {line_num}:{char_in_line_num} (char_num: {char_num})
+        pos_str=this.tokens[this.cursor][2]
+        m=re.match(r'.*? (.*?):.*',pos_str)
+        line_nb=m.group(1)
+        return line_nb
+        
 class MyException(Exception):
     # def __init__(self, expression):
         # self.expression = expression
