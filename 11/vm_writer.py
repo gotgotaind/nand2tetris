@@ -25,7 +25,7 @@ class vm_writer:
     def write_arithmetic(self,op):
         opd={
         '+':'add',
-        '-':'neg',
+        '-':'sub',
         '*':'call Math.multiply 2',        
         '/':'call Math.divide 2',
         '&':'and',

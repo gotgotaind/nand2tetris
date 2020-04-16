@@ -209,11 +209,12 @@ class compilation_engine:
         self.tok.advance()
         self.compile_symbol('}')        
 
-        self.vw.write_goto('if_end_'+if_line)
-        self.vw.write_label('if_false_'+if_line)        
+        
         
         self.tok.advance()
         if( self.tok.tokenType() == 'KEYWORD' and self.tok.keyWord() in 'ELSE' ):
+            self.vw.write_goto('if_end_'+if_line)
+            self.vw.write_label('if_false_'+if_line)  
             self.write(f'<keyword> else </keyword>')
             self.tok.advance()
             self.compile_symbol('{')
@@ -221,11 +222,13 @@ class compilation_engine:
             self.compile_statements()
 
             self.tok.advance()
-            self.compile_symbol('}')               
+            self.compile_symbol('}')
+            self.vw.write_label('if_end_'+if_line)
         else:
+            self.vw.write_label('if_false_'+if_line)
             self.tok.backoff()
                 
-        self.vw.write_label('if_end_'+if_line)        
+                
         
         self.indent_level=self.indent_level-1
         self.write(f'</{statement}Statement>')     
@@ -458,7 +461,11 @@ class compilation_engine:
             self.vw.write_call('Memory.alloc',1)
             # don't know why this one...
             self.vw.write_pop('pointer',0)
-            
+
+        if( sub_type == 'method' ):
+            self.vw.write_push('argument',0)
+            self.vw.write_pop('pointer',0)
+        
         self.compile_statements()        
                 
         self.tok.advance()
@@ -610,11 +617,15 @@ class compilation_engine:
         
         if( self.tok.symbol() == '(' ):
             # so it would be a method of current object (this)
+            # so need to push this object as first argument
+            # and add one to the number of arguments
+            additional_object_method_implied_argument=1
             self.vw.write_push('pointer',0)
             el_length=self.compile_expression_list()
             sub_name=self.st.get_class()+'.'+sub_name_part1
             self.tok.advance()
             self.compile_symbol(')')
+            print(f'was here {sub_name},{el_length},{additional_object_method_implied_argument}')
         elif( self.tok.symbol() == '.' ):
             self.tok.advance()
             if( self.tok.tokenType() == 'IDENTIFIER' ):
@@ -634,10 +645,12 @@ class compilation_engine:
                 raise Not_op(f"Expected an identifier at "+f'{self.tok.tokens[self.tok.cursor][2]}')
             self.tok.advance()
             self.compile_symbol('(')
-            el_length=self.compile_expression_list()+additional_object_method_implied_argument
+            el_length=self.compile_expression_list()
             self.tok.advance()
             self.compile_symbol(')')
+        el_length=el_length+additional_object_method_implied_argument
         self.vw.write_call(sub_name,el_length)
+        print(f'{sub_name},{el_length},{additional_object_method_implied_argument}')
 
     def compile_expression_list(self):
         
