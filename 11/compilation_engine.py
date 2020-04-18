@@ -413,6 +413,10 @@ class compilation_engine:
         self.write('<parameterList>')
         self.indent_level=self.indent_level+1
         
+        
+        if( sub_type == 'method' ):
+            self.st.define('this',self.st.get_class(),'argument')
+        
         sub_param_nb=0
         while ( True ):
             self.tok.advance()
@@ -603,7 +607,7 @@ class compilation_engine:
             self.indent_level=self.indent_level+1        
             self.write(f'<symbol> {self.tok.symbol()} </symbol>')
             self.compile_term()
-            self.vw.write_arithmetic(unary_op)
+            self.vw.write_unary_arithmetic(unary_op)
             self.indent_level=self.indent_level-1
             self.write('</term>')
         else:

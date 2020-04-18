@@ -38,6 +38,14 @@ class vm_writer:
         command=opd[op]
         self.vfp.write(f'{command}\n')
         
+    def write_unary_arithmetic(self,op):
+        opd={
+        '-':'neg',
+        '~':'not'
+        }
+        command=opd[op]
+        self.vfp.write(f'{command}\n')
+
     def write_label(self,label):
         self.vfp.write(f'label {label}\n')
         
