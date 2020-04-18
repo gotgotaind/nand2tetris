@@ -241,13 +241,20 @@ class compilation_engine:
         
         self.tok.advance()
         id=self.compile_identifier()  
-
+        id_kind=self.st.kind_of(id)
+        id_index=self.st.index_of(id)
+        
         self.tok.advance()
+        is_array=False
         if( self.tok.tokenType() == 'SYMBOL' and self.tok.symbol() in '[' ):
+            is_array=True
             self.write(f'<symbol> [ </symbol>')
+
             self.compile_expression()
             self.tok.advance()
             self.compile_symbol(']')   
+            self.vw.write_push(id_kind,id_index)
+            self.vw.write_arithmetic('+')
         else:
             is_array=False
             self.tok.backoff()
@@ -258,9 +265,13 @@ class compilation_engine:
         self.tok.advance()
         self.compile_symbol(';')  
         
-        id_kind=self.st.kind_of(id)
-        id_index=self.st.index_of(id)
-        self.vw.write_pop(id_kind,id_index)
+        if( is_array ):
+            self.vw.write_pop('temp',0)
+            self.vw.write_pop('pointer',1)
+            self.vw.write_push('temp',0)
+            self.vw.write_pop('that',0)           
+        else:
+            self.vw.write_pop(id_kind,id_index)
         
         
         self.indent_level=self.indent_level-1
@@ -505,7 +516,16 @@ class compilation_engine:
         elif( self.tok.tokenType() == 'STRING_CONST'):
             self.write('<term>')
             self.indent_level=self.indent_level+1
-            self.write(f'<stringConstant> {self.tok.stringVal()} </stringConstant>')
+            chaine=self.tok.stringVal()
+            
+            self.write(f'<stringConstant> {chaine} </stringConstant>')
+            
+            self.vw.write_push('constant',len(chaine))
+            self.vw.write_call('String.new',1)
+            for char in chaine:
+                self.vw.write_push('constant',ord(char))
+                self.vw.write_call('String.appendChar',2)
+                
             self.indent_level=self.indent_level-1
             self.write('</term>')
         elif( self.tok.tokenType() =='KEYWORD' and self.tok.keyWord() in ['TRUE','FALSE','NULL','THIS'] ):
@@ -535,9 +555,14 @@ class compilation_engine:
                 self.write('<term>')
                 self.indent_level=self.indent_level+1
                 self.write(f'<identifier> {self.tok.identifier()} </identifier>')
+                name=self.tok.identifier()
                 self.tok.advance()
                 self.write(f'<symbol> [ </symbol>')
                 self.compile_expression()
+                self.vw.write_push(self.st.kind_of(name),self.st.index_of(name))
+                self.vw.write_arithmetic('+')
+                self.vw.write_pop('pointer',1)
+                self.vw.write_push('that',0)    
                 self.tok.advance()
                 self.compile_symbol(']')  
                 self.indent_level=self.indent_level-1
