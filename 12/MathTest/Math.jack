@@ -73,11 +73,18 @@ class Math {
      */
     function int divide(int x, int y) {
         var int q;
-        var int a;
-        
+        var int a;        
         var boolean sign;
+
+        if ( y = 0 ) {
+            do Sys.error(3000);
+        }
         
-        if ( ( x > 0 ) & ( y > 0 ) | ( x < 0 ) & (y < 0 ) ) {
+        if ( x = 0 ) {
+            return 0;
+        }
+        
+        if ( (( x > 0 ) & ( y > 0 )) | (( x < 0 ) & (y < 0 )) ) {
             let sign = true;
         }
         else {
@@ -86,41 +93,46 @@ class Math {
         
         let x=Math.abs(x);
         let y=Math.abs(y);
-                
-        //do Output.printInt(x);
-        //do Output.printString("/");
-        //do Output.printInt(y);
-        //do Output.printChar(String.newLine());  
-        //do Keyboard.readChar();        
+                     
+        let q=Math.divide_positive_integers(x,y);
+
+        if ( sign ) {
+            //do Output.printString("true");
+            return q;
+        }
+        else
+        {
+            //do Output.printString("false");
+            return -q;
+        }
+
+    }
+
+    function int divide_positive_integers(int x, int y) {
+        var int q;
+        var int a;        
+               
         if ( y > x ) {
             return 0;
         }
-        let q=Math.divide(x,y+y);
+        
+        let q=Math.divide_positive_integers(x,y+y);
+        if ( y < 0 ) {
+            do Sys.error(3001);
+        }
         let a=Math.multiply(q,y);
         let a=a+a;
         if ( ( x - a ) < y ) {
             let q=q+q;
-            if ( sign  ) {
-                return q;
-            }
-            else
-            {
-                return ( -q );
-            }
+            return q;
         }
         else {
             let q=q+q+1;
-            if ( sign  ) {
-                return q;
-            }
-            else
-            {
-                return ( -q );
-            }
+            return q;
         } 
-        //return 0;
     }
-
+    
+    
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
         return 0;
