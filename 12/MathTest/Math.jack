@@ -135,16 +135,44 @@ class Math {
     
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
-        return 0;
+        var int y;
+        var int j;
+        
+        let y=0;        
+        let j=7;
+        
+        while( j > -1 ) {
+            if (
+                (( Math.multiply( y + biti[j],y + biti[j] ) - 1 )< x)
+                &
+                ( Math.multiply( y + biti[j],y + biti[j] ) > 0 )
+            ) {
+                let y = y + biti[j];
+            }
+            let j=j-1;
+        }
+        return y;
     }
 
     /** Returns the greater number. */
     function int max(int a, int b) {
-        return 0;
+        if ( a > b ) {
+            return a;
+        }
+        else
+        {
+            return b;
+        }
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
-        return 0;
+        if ( a < b ) {
+            return a;
+        }
+        else
+        {
+            return b;
+        }
     }
 }

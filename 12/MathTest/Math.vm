@@ -245,12 +245,100 @@ pop local 0
 push local 0
 return
 label IF_END2
-function Math.sqrt 0
+function Math.sqrt 2
 push constant 0
+pop local 0
+push constant 7
+pop local 1
+label WHILE_EXP0
+push local 1
+push constant 1
+neg
+gt
+not
+if-goto WHILE_END0
+push local 0
+push local 1
+push static 0
+add
+pop pointer 1
+push that 0
+add
+push local 0
+push local 1
+push static 0
+add
+pop pointer 1
+push that 0
+add
+call Math.multiply 2
+push constant 1
+sub
+push argument 0
+lt
+push local 0
+push local 1
+push static 0
+add
+pop pointer 1
+push that 0
+add
+push local 0
+push local 1
+push static 0
+add
+pop pointer 1
+push that 0
+add
+call Math.multiply 2
+push constant 0
+gt
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 0
+push local 1
+push static 0
+add
+pop pointer 1
+push that 0
+add
+pop local 0
+label IF_FALSE0
+push local 1
+push constant 1
+sub
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
 return
 function Math.max 0
-push constant 0
+push argument 0
+push argument 1
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 0
 return
+goto IF_END0
+label IF_FALSE0
+push argument 1
+return
+label IF_END0
 function Math.min 0
-push constant 0
+push argument 0
+push argument 1
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 0
 return
+goto IF_END0
+label IF_FALSE0
+push argument 1
+return
+label IF_END0
