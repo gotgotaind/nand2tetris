@@ -188,6 +188,22 @@ label IF_END1
 function String.setInt 0
 push argument 0
 pop pointer 0
+push constant 0
+pop this 0
+push argument 1
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+push constant 45
+call String.appendChar 2
+pop temp 0
+push argument 1
+neg
+pop argument 1
+label IF_FALSE0
 push argument 1
 push pointer 0
 call String.int2string 2
@@ -195,20 +211,6 @@ pop temp 0
 push constant 0
 return
 function String.int2string 4
-push argument 0
-push constant 0
-lt
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push argument 1
-push constant 45
-call String.appendChar 2
-pop temp 0
-push argument 0
-neg
-pop argument 0
-label IF_FALSE0
 push argument 0
 push constant 10
 call Math.divide 2
@@ -227,15 +229,15 @@ pop local 1
 push argument 0
 push constant 10
 lt
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push argument 1
 push local 1
 call String.appendChar 2
 return
-goto IF_END1
-label IF_FALSE1
+goto IF_END0
+label IF_FALSE0
 push local 2
 push argument 1
 call String.int2string 2
@@ -244,7 +246,7 @@ push argument 1
 push local 1
 call String.appendChar 2
 return
-label IF_END1
+label IF_END0
 function String.digit2char 0
 push argument 0
 push constant 48

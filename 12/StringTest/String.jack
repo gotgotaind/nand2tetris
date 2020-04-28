@@ -20,8 +20,6 @@ class String {
 	constructor String new(int maxLength) {
 		// zero capacity string should be supported
 		// so maybe it's just ok to not initialyse str in this case?
-		//do Output.printString("In string.new0 ");
-		//do Output.println();
 		let maxlen=maxLength;
 		if ( maxlen > 0 ) {
 			let str = Array.new(maxlen);
@@ -60,6 +58,7 @@ class String {
 
 	/** Appends c to this string's end and returns this string. */
 	method String appendChar(char c) {
+			
 		if ( len = maxlen ) {
 			do Sys.error(4001);
 		}
@@ -115,8 +114,14 @@ class String {
 	method void setInt(int val) {
 		//var String s;
 		//let s = String.new(7);
+		
+		// We have to start from an empty string.
+		let len=0;
 
-
+		if ( val < 0 ) {
+			do appendChar(45);
+			let val=-val;
+		}
 		do String.int2string(val,this);
 		return;
 	}
@@ -126,11 +131,6 @@ class String {
 		var char c;
 		var int d;
 		var int m;
-
-		if ( val < 0 ) {
-			do s.appendChar(45);
-			let val=-val;
-		}
 		
 		let d=Math.divide(val,10);	
 		let m=Math.multiply(d,10);	

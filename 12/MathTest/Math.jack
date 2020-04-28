@@ -41,6 +41,7 @@ class Math {
         }
         
         // if ( x < 0 )
+		// Could have done x=-x ? Much simpler!?!
         return ( (~ x) + 1 );
         
     }
