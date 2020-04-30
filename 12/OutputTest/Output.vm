@@ -1513,6 +1513,8 @@ call Math.divide 2
 push static 7
 push constant 32
 call Math.multiply 2
+push static 6
+call Math.multiply 2
 add
 pop local 0
 push static 8
@@ -1577,6 +1579,9 @@ pop local 5
 push local 5
 push local 6
 and
+pop local 7
+push constant 1
+neg
 pop local 7
 push local 8
 push local 7

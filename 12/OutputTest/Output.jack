@@ -217,7 +217,7 @@ class Output {
 		
 		let charMap=Output.getMap(c);
 		
-		let start_addr=Math.divide(curcol,2)+Math.multiply(currow,32);
+		let start_addr=Math.divide(curcol,2)+Math.multiply(Math.multiply(currow,32),char_h);
 		
 		// if curcol%2 = 0 display char in left byte of memory 16 bits word/int
 		if( (curcol-Math.multiply(Math.divide(curcol,2),curcol)) = 0 ) {
@@ -239,7 +239,7 @@ class Output {
 				let cur_int=Memory.peek(addr);
 				let cur_int=Memory.peek(screen_addr);
 				let new_int=cur_int & char_int;
-				//let new_int=-1;
+				let new_int=-1;
 				do Memory.poke(addr,new_int);
 				//do Memory.poke(screen_addr+start_addr,new_int);
 				
