@@ -1503,26 +1503,18 @@ call Output.printChar 1
 pop temp 0
 push constant 0
 return
-function Output.printChar 10
+function Output.printChar 9
 push argument 0
 call Output.getMap 1
-pop local 5
-push static 8
-push static 5
-call Math.multiply 2
-pop local 0
-push static 7
-push static 6
-call Math.multiply 2
-pop local 1
+pop local 3
 push static 8
 push constant 2
 call Math.divide 2
-push local 1
+push static 7
 push constant 32
 call Math.multiply 2
 add
-pop local 2
+pop local 0
 push static 8
 push static 8
 push constant 2
@@ -1537,68 +1529,70 @@ goto IF_FALSE0
 label IF_TRUE0
 push constant 0
 not
-pop local 3
+pop local 1
 label IF_FALSE0
-push local 3
+push constant 0
+not
+pop local 1
+push local 1
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
 push constant 0
-pop local 4
+pop local 2
 label WHILE_EXP0
-push local 4
+push local 2
 push static 6
 lt
 not
 if-goto WHILE_END0
-push local 4
-push local 5
+push local 2
+push local 3
 add
 pop pointer 1
 push that 0
-pop local 6
-push local 6
+pop local 4
+push local 4
 push constant 16
 call Math.multiply 2
+pop local 6
+push local 6
+push constant 255
+add
+pop local 6
+push static 9
+push local 0
+add
+push local 2
+push constant 32
+call Math.multiply 2
+add
 pop local 8
-push static 9
-push local 2
-add
-push local 4
-push constant 32
-call Math.multiply 2
-add
-call Memory.peek 1
-pop local 7
-push static 9
-call Memory.peek 1
-pop local 7
-push local 7
 push local 8
-and
-pop local 9
-push constant 1
-neg
-pop local 9
+call Memory.peek 1
+pop local 5
 push static 9
-push local 2
-add
-push local 4
-push constant 32
-call Math.multiply 2
-add
-push local 9
+call Memory.peek 1
+pop local 5
+push local 5
+push local 6
+and
+pop local 7
+push local 8
+push local 7
 call Memory.poke 2
 pop temp 0
-push local 4
+push local 2
 push constant 1
 add
-pop local 4
+pop local 2
 goto WHILE_EXP0
 label WHILE_END0
 label IF_FALSE1
 push static 8
 push static 2
+push constant 1
+sub
 lt
 if-goto IF_TRUE2
 goto IF_FALSE2
@@ -1613,6 +1607,8 @@ push constant 0
 pop static 8
 push static 7
 push static 1
+push constant 1
+sub
 lt
 if-goto IF_TRUE3
 goto IF_FALSE3

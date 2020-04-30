@@ -24,8 +24,8 @@ class Output {
 	static int npixcol;
 	static int char_l;
 	static int char_h;
-	static int curi;
-	static int curj;
+	static int currow;
+	static int curcol;
 	static int screen_addr;
 
     /** Initializes the screen, and locates the cursor at the screen's top-left. */
@@ -36,8 +36,8 @@ class Output {
 		let npixcol=256;
 		let char_l=8;
 		let char_h=11;
-		let curi=0;
-		let curj=0;
+		let currow=0;
+		let curcol=0;
 		let screen_addr=16384;
 		do Output.initMap();
 		return;
@@ -196,8 +196,8 @@ class Output {
     /** Moves the cursor to the j-th column of the i-th row,
      *  and erases the character displayed there. */
     function void moveCursor(int i, int j) {
-		let curi=i;
-		let curj=j;
+		let currow=i;
+		let curcol=j;
 		do Output.printChar(0);
 		return;
     }
@@ -205,59 +205,59 @@ class Output {
     /** Displays the given character at the cursor location,
      *  and advances the cursor one column forward. */
     function void printChar(char c) {
-		var int x,y;
 		var int start_addr;
 		var boolean left;
-		var int j;
+		var int char_line;
 		var Array charMap;
 		var int char_byte;
 		var int cur_int;
 		var int char_int;
 		var int new_int;
+		var int addr;
 		
 		let charMap=Output.getMap(c);
 		
-		let x=curj*char_l;
-		let y=curi*char_h;
+		let start_addr=Math.divide(curcol,2)+Math.multiply(currow,32);
 		
-		let start_addr=Math.divide(curj,2)+Math.multiply(y,32);
-		
-		if( (curj-Math.multiply(Math.divide(curj,2),curj)) = 0 ) {
+		// if curcol%2 = 0 display char in left byte of memory 16 bits word/int
+		if( (curcol-Math.multiply(Math.divide(curcol,2),curcol)) = 0 ) {
 			let left=true;
 		}
 		
+		let left=true;
 		if ( left ) {
-			let j=0;
+			let char_line=0;
 			
-			while ( j < char_h ) {
-				let char_byte=charMap[j];
+			while ( char_line < char_h ) {
+				let char_byte=charMap[char_line];
 				// shift 8 bits to the left
 				let char_int=Math.multiply(char_byte,16);
 				// pad with ones int the second byte 
-				//let char_int=char_int+255;
-				let cur_int=Memory.peek(screen_addr+start_addr+Math.multiply(j,32));
-				//let cur_int=Memory.peek(screen_addr+start_addr);
+				let char_int=char_int+255;
+				// get the current word at dest addr
+				let addr=screen_addr+start_addr+Math.multiply(char_line,32);
+				let cur_int=Memory.peek(addr);
 				let cur_int=Memory.peek(screen_addr);
 				let new_int=cur_int & char_int;
-				let new_int=-1;
-				do Memory.poke(screen_addr+start_addr+Math.multiply(j,32),new_int);
+				//let new_int=-1;
+				do Memory.poke(addr,new_int);
 				//do Memory.poke(screen_addr+start_addr,new_int);
 				
-				let j=j+1;
+				let char_line=char_line+1;
 			}
 		}		
-		if ( curj < ncol ) {
-			let curj=curj+1;
+		if ( curcol < (ncol-1) ) {
+			let curcol=curcol+1;
 		}
 		else
 		{
-			let curj=0;
-			if ( curi < nrow ) {
-				let curi=curi+1;
+			let curcol=0;
+			if ( currow < (nrow-1) ) {
+				let currow=currow+1;
 			}
 			else
 			{
-				let curi=0;
+				let currow=0;
 			}
 		}
 				
