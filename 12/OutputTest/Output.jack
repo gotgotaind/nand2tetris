@@ -198,7 +198,7 @@ class Output {
     function void moveCursor(int i, int j) {
 		let currow=i;
 		let curcol=j;
-		do Output.printChar(0);
+		//do Output.printChar(0);
 		return;
     }
 
@@ -212,6 +212,7 @@ class Output {
 		var int char_byte;
 		var int cur_int;
 		var int char_int;
+		var int mask_int;
 		var int new_int;
 		var int addr;
 		
@@ -220,31 +221,66 @@ class Output {
 		let start_addr=Math.divide(curcol,2)+Math.multiply(Math.multiply(currow,32),char_h);
 		
 		// if curcol%2 = 0 display char in left byte of memory 16 bits word/int
-		if( (curcol-Math.multiply(Math.divide(curcol,2),curcol)) = 0 ) {
-			let left=true;
+		//if( (curcol-Math.multiply(Math.divide(curcol,2),curcol)) = 0 ) {
+		if ( ( curcol - Math.multiply(Math.divide(curcol,2),curcol) ) = 0 ) {
+			let left = true;
+		}
+		else
+		{
+			let left = false;
 		}
 		
-		let left=true;
-		if ( left ) {
-			let char_line=0;
-			
-			while ( char_line < char_h ) {
-				let char_byte=charMap[char_line];
-				// shift 8 bits to the left
-				let char_int=Math.multiply(char_byte,16);
+
+		let char_line=0;
+		
+		while ( char_line < char_h ) {
+			let char_byte=charMap[char_line];
+			if( left  ) {
+
 				// pad with ones int the second byte 
-				let char_int=char_int+255;
-				// get the current word at dest addr
-				let addr=screen_addr+start_addr+Math.multiply(char_line,32);
-				let cur_int=Memory.peek(addr);
-				let cur_int=Memory.peek(screen_addr);
-				let new_int=cur_int & char_int;
-				let new_int=-1;
-				do Memory.poke(addr,new_int);
-				//do Memory.poke(screen_addr+start_addr,new_int);
-				
-				let char_line=char_line+1;
+				// -256 outputs 1s in the right part
+				let char_int=char_byte| (-256);
+				//let char_int=char_byte;
 			}
+			else {
+				// shift 8 bits to the right
+				let char_int=Math.multiply(char_byte,512);
+				//let char_int=char_byte;
+				// pad with ones in the first byte
+				let char_int=char_int | 255;
+			}
+			
+			// get the current word at dest addr
+			let addr=screen_addr+start_addr+Math.multiply(char_line,32);
+			let cur_int=Memory.peek(addr);
+			//let cur_int=Memory.peek(screen_addr);
+			
+			if ( left ) {
+				// 255 is 1s in left part
+				let mask_int=255;
+				// new_int is cur_int with 1s in left part
+				let new_int=cur_int | mask_int;
+				// and char_int to left part
+				let new_int=new_int & char_int;
+			}
+			else {
+				// -256 is 1s in the right part
+				let mask_int=-256;
+				// new_int is cur_int with 1s in right part
+				let new_int=cur_int | mask_int;
+				// and char_int to right part
+				let new_int=new_int & char_int;
+				// let new_int=char_int;
+			}
+			
+			
+			
+			//let new_int=-1;
+			do Memory.poke(addr,new_int);
+			//do Memory.poke(screen_addr+start_addr,new_int);
+			
+			let char_line=char_line+1;
+			
 		}		
 		if ( curcol < (ncol-1) ) {
 			let curcol=curcol+1;
