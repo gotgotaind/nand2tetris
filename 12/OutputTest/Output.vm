@@ -1557,7 +1557,7 @@ pop local 6
 goto IF_END1
 label IF_FALSE1
 push local 4
-push constant 512
+push constant 256
 call Math.multiply 2
 pop local 6
 push local 6
@@ -1676,7 +1676,7 @@ pop local 6
 goto IF_END1
 label IF_FALSE1
 push local 4
-push constant 512
+push constant 256
 call Math.multiply 2
 pop local 6
 push local 6

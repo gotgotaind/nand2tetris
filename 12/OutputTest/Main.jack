@@ -20,8 +20,16 @@ class Main {
         do Output.printChar(65);
         
 		do Output.moveCursor(2, 0);
-        do Output.printString("0123456789");
-		
+        //do Output.printString("0123456789");
+		do Output.printChar(66);
+		do Output.moveCursor(2, 1);
+		do Output.printChar(66);
+		do Output.moveCursor(2, 2);
+		do Output.printChar(66);
+		do Output.moveCursor(2, 3);
+		do Output.printChar(66);
+		do Output.moveCursor(2, 4);
+//		do Output.printChar(66);		
         return;
     }
 }

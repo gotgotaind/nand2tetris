@@ -238,7 +238,7 @@ class Output {
 			}
 			else {
 				// shift 8 bits to the right
-				let char_int=Math.multiply(char_byte,512);
+				let char_int=Math.multiply(char_byte,256);
 				//let char_int=char_byte;
 				// pad with ones in the first byte
 				let char_int=char_int | 255;
@@ -323,7 +323,7 @@ class Output {
 			}
 			else {
 				// shift 8 bits to the right
-				let char_int=Math.multiply(char_byte,512);
+				let char_int=Math.multiply(char_byte,256);
 				//let char_int=char_byte;
 				// pad with ones in the first byte
 				let char_int=char_int | 255;
