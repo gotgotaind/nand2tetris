@@ -91,7 +91,7 @@ class Output {
         do Output.create(64,30,51,51,59,59,59,27,3,30,0,0);  // @
         do Output.create(63,30,51,51,24,12,12,0,12,12,0,0);  // ?
 
-        do Output.create(65,0,0,0,0,0,0,0,0,0,0,0);          // A ** TO BE FILLED **
+        do Output.create(65,12,30,30,51,51,63,51,51,51,0,0);          // A ** TO BE FILLED **
         do Output.create(66,31,51,51,51,31,51,51,51,31,0,0); // B
         do Output.create(67,28,54,35,3,3,3,35,54,28,0,0);    // C
         do Output.create(68,15,27,51,51,51,51,51,27,15,0,0); // D
@@ -400,16 +400,43 @@ class Output {
     /** Displays the given integer starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printInt(int i) {
+		var String s;
+		let s = String.new(7);
+		do s.setInt(i);
+		do Output.printString(s);
+		do s.dispose();
 		return;
     }
 
     /** Advances the cursor to the beginning of the next line. */
     function void println() {
+		let curcol=0;
+		if ( currow < (nrow-1) ) {
+			let currow=currow+1;
+		}
+		else
+		{
+			let currow=0;
+		}
 		return;
     }
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+		if ( curcol > 0 ) {
+			let curcol=curcol-1;
+		}
+		else {
+			let curcol = 63;
+			if ( currow > 0 ) {
+				let currow = currow -1;
+			}
+			else
+			{
+				let currow=22;
+			}
+		}
+		
 		return;
     }
 }
