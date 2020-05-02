@@ -217,7 +217,7 @@ class Output {
 		
 		let start_addr=Math.divide(curcol,2)+Math.multiply(Math.multiply(currow,32),char_h);
 		
-		if ( ( curcol - Math.multiply(Math.divide(curcol,2),curcol) ) = 0 ) {
+		if ( ( curcol - Math.multiply(Math.divide(curcol,2),2) ) = 0 ) {
 			let left = true;
 		}
 		else
@@ -301,7 +301,7 @@ class Output {
 		
 		// if curcol%2 = 0 display char in left byte of memory 16 bits word/int
 		//if( (curcol-Math.multiply(Math.divide(curcol,2),curcol)) = 0 ) {
-		if ( ( curcol - Math.multiply(Math.divide(curcol,2),curcol) ) = 0 ) {
+		if ( ( curcol - Math.multiply(Math.divide(curcol,2),2) ) = 0 ) {
 			let left = true;
 		}
 		else

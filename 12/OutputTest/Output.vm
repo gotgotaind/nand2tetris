@@ -1515,7 +1515,7 @@ push static 8
 push static 8
 push constant 2
 call Math.divide 2
-push static 8
+push constant 2
 call Math.multiply 2
 sub
 push constant 0
@@ -1634,7 +1634,7 @@ push static 8
 push static 8
 push constant 2
 call Math.divide 2
-push static 8
+push constant 2
 call Math.multiply 2
 sub
 push constant 0
