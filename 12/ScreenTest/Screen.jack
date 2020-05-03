@@ -14,12 +14,25 @@ class Screen {
 	static int ncol;
 	static int screen_addr;
 	static boolean color;
+	static array biti;
 	
     /** Initializes the Screen. */
     function void init() {
+		var int i;
+		
 		let nrow=512;
 		let ncol=256;
 		let screen_addr=16384;
+		let color=true;
+		
+        let biti = Array.new(16);
+        let i=1;
+        let biti[0]=1;
+        while ( i<16 ) {
+            let biti[i]=biti[i-1]+biti[i-1];
+            let i=i+1;
+        }
+		
 		return;
     }
 
@@ -46,12 +59,26 @@ class Screen {
     /** Draws the (x,y) pixel, using the current color. */
     function void drawPixel(int x, int y) {
 		var int addr;
-		var int word;
+		var int cur_word;
+		var int pix_word;
+		var int dest_word;
 		var int bit_pos;
 		var int mask;
-		let addr=Math.multiply(y,32)+Math.divide(x,16);
-		let word=Memory.peek(addr);
+		
+		let addr=screen_addr+Math.multiply(y,32)+Math.divide(x,16);
+		let cur_word=Memory.peek(addr);
 		let bit_pos=x-Math.multiply(Math.divide(x,16),16);
+		let pix_word=biti[bit_pos];
+		
+		if( color ) {
+			let dest_word=pix_word | cur_word;
+		}
+		else {
+			let pix_word = ~ pix_word;
+			let dest_word=pix_word & cur_word;
+		}
+		do Memory.poke(addr,dest_word);
+		
 		
 		return;
     }
