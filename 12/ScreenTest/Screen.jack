@@ -85,6 +85,58 @@ class Screen {
 
     /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
     function void drawLine(int x1, int y1, int x2, int y2) {
+		var int dx,dy,a,b,adyMinusbdx;
+		
+		let dx=x2-x1;
+		let dy=y2-y1;
+		let a=0;
+		let b=0;
+		let adyMinusbdx=0;
+		
+		if ( (dx > 0) & ( dy > 0 ) ) {
+			while ( ( a < (dx+1) ) & ( b < (dy + 1) ) ) {
+				do Screen.drawPixel(x1+a,y1+b);
+				if ( adyMinusbdx < 0 ) {
+					let a=a+1;
+					let adyMinusbdx=adyMinusbdx+dy;
+				}
+				else {
+					let b=b+1;
+					let adyMinusbdx=adyMinusbdx-dx;
+				}
+			}
+		}
+		
+		if ( (dx < 0) & ( dy < 0 ) ) {
+			while ( ( a > (dx+1) ) & ( b > (dy + 1) ) ) {
+				do Screen.drawPixel(x1+a,y1+b);
+				if ( adyMinusbdx < 0 ) {
+					let a=a-1;
+					let adyMinusbdx=adyMinusbdx-dy;
+				}
+				else {
+					let b=b-1;
+					let adyMinusbdx=adyMinusbdx+dx;
+				}
+			}
+		}
+
+		if ( (dx > 0) & ( dy < 0 ) ) {
+			while ( ( a < (dx+1) ) & ( b > (dy + 1) ) ) {
+				do Screen.drawPixel(x1+a,y1+b);
+				if ( adyMinusbdx < 0 ) {
+					let a=a+1;
+					let adyMinusbdx=adyMinusbdx-dy;
+				}
+				else {
+					let b=b-1;
+					let adyMinusbdx=adyMinusbdx-dx;
+				}
+			}
+		}
+
+		
+		// lola et ses freres 1h08
 		return;
     }
 
