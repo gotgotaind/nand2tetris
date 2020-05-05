@@ -189,11 +189,24 @@ class Screen {
     /** Draws a filled rectangle whose top left corner is (x1, y1)
      * and bottom right corner is (x2,y2), using the current color. */
     function void drawRectangle(int x1, int y1, int x2, int y2) {
+		do Screen.drawLine(x1,y1,x2,y1);
+		do Screen.drawLine(x2,y1,x2,y2);
+		do Screen.drawLine(x2,y2,x1,y2);
+		do Screen.drawLine(x1,y2,x1,y1);
 		return;
     }
 
     /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
     function void drawCircle(int x, int y, int r) {
+		var int dy;
+		var int sqrt;
+		
+		let dy=-r;
+		while ( dy < (r+1) ) {
+			let sqrt=Math.sqrt(Math.multiply(r,r)-Math.multiply(dy,dy));
+			do Screen.drawLine(x-sqrt,y+dy,x+sqrt,y+dy);
+			let dy=dy+1;
+		}
 		return;
     }
 }
