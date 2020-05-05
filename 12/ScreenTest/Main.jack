@@ -11,20 +11,18 @@ class Main {
 	
 	*/
     function void main() {
-		var int i,j,step;
+		var int i,j,step,x,y;
 		
-		do Screen.drawLine(0,0,511,255);        // base line
-		do Screen.drawLine(0,0,511,126);        // base line
-        do Screen.drawLine(0,0,266,255);        // base line
-		
-		do Screen.drawLine(510,255,0,1);        // base line
-		do Screen.drawLine(510,126,0,1);        // base line
-        do Screen.drawLine(265,255,0,1);        // base line
-		
-		do Screen.drawLine(0,255,511,0);
-		//do Screen.drawLine(20,125,400,100);
-		do Screen.drawLine(20,125,400,150);
-		
+		do Screen.drawLine(20,0,20,255);
+		do Screen.drawLine(400,255,400,0);
+		do Screen.drawLine(0,125,511,125);
+		do Screen.drawLine(511,100,0,100);
+		// 20,100  400,125
+		// dx<0 dy>0
+		do Screen.drawLine(400,100,20,125);
+		// dx<0 dy<0
+		do Screen.drawLine(400,125,20,100);
+
         return;
     }
 }

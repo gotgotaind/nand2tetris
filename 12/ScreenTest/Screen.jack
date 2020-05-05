@@ -93,6 +93,38 @@ class Screen {
 		let b=0;
 		let adyMinusbdx=0;
 		
+		// vertical line down
+		if ( ( dx = 0 ) & ( dy > 0 ) ) {
+			while ( b < ( dy + 1 ) ) {
+				do Screen.drawPixel(x1,y1+b);
+				let b=b+1;
+			}
+		}
+		
+		// vertical line up
+		if ( ( dx = 0 ) & ( dy < 0 ) ) {
+			while ( b > ( dy - 1 ) ) {
+				do Screen.drawPixel(x1,y1+b);
+				let b=b-1;
+			}
+		}
+
+		// horizontal line right
+		if ( ( dx > 0 ) & ( dy = 0 ) ) {
+			while ( a < ( dx + 1 ) ) {
+				do Screen.drawPixel(x1+a,y1);
+				let a=a+1;
+			}
+		}
+		
+		// horizontal line left
+		if ( ( dx < 0 ) & ( dy = 0 ) ) {
+			while ( a > ( dx - 1 ) ) {
+				do Screen.drawPixel(x1+a,y1);
+				let a=a-1;
+			}
+		}
+		
 		if ( (dx > 0) & ( dy > 0 ) ) {
 			while ( ( a < (dx+1) ) & ( b < (dy + 1) ) ) {
 				do Screen.drawPixel(x1+a,y1+b);
@@ -108,7 +140,7 @@ class Screen {
 		}
 		
 		if ( (dx < 0) & ( dy < 0 ) ) {
-			while ( ( a > (dx+1) ) & ( b > (dy + 1) ) ) {
+			while ( ( a > (dx-1) ) & ( b > (dy - 1) ) ) {
 				do Screen.drawPixel(x1+a,y1+b);
 				if ( adyMinusbdx < 0 ) {
 					let a=a-1;
@@ -120,9 +152,23 @@ class Screen {
 				}
 			}
 		}
-
+		
+		if ( (dx < 0) & ( dy > 0 ) ) {
+			while ( ( a > (dx-1) ) & ( b < (dy + 1) ) ) {
+				do Screen.drawPixel(x1+a,y1+b);
+				if ( adyMinusbdx < 0 ) {
+					let a=a-1;
+					let adyMinusbdx=adyMinusbdx+dy;
+				}
+				else {
+					let b=b+1;
+					let adyMinusbdx=adyMinusbdx+dx;
+				}
+			}
+		}
+		
 		if ( (dx > 0) & ( dy < 0 ) ) {
-			while ( ( a < (dx+1) ) & ( b > (dy + 1) ) ) {
+			while ( ( a < (dx+1) ) & ( b > (dy - 1) ) ) {
 				do Screen.drawPixel(x1+a,y1+b);
 				if ( adyMinusbdx < 0 ) {
 					let a=a+1;
