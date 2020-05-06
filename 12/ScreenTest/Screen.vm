@@ -521,30 +521,26 @@ label IF_FALSE10
 push constant 0
 return
 function Screen.drawRectangle 0
+label WHILE_EXP0
+push argument 1
+push argument 3
+push constant 1
+add
+lt
+not
+if-goto WHILE_END0
 push argument 0
 push argument 1
 push argument 2
 push argument 1
 call Screen.drawLine 4
 pop temp 0
-push argument 2
 push argument 1
-push argument 2
-push argument 3
-call Screen.drawLine 4
-pop temp 0
-push argument 2
-push argument 3
-push argument 0
-push argument 3
-call Screen.drawLine 4
-pop temp 0
-push argument 0
-push argument 3
-push argument 0
-push argument 1
-call Screen.drawLine 4
-pop temp 0
+push constant 1
+add
+pop argument 1
+goto WHILE_EXP0
+label WHILE_END0
 push constant 0
 return
 function Screen.drawCircle 2
