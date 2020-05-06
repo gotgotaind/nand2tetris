@@ -45,14 +45,15 @@ class Keyboard {
     function char readChar() {
 		var char c,d;
 		
-		let char c = 0;
+		let c = 0;
 		while ( c=0 ) {
-			let c=Keyboard.keypressed();
+			let c=Keyboard.keyPressed();
 		}
-		while( c=Keyboard.keypressed() ) {
+		while( c=Keyboard.keyPressed() ) {
 		}
 		
 		do Output.printChar(c);
+		return c;
     }
 
     /**								
@@ -61,7 +62,7 @@ class Keyboard {
      * and returns its value. Also handles user backspaces.
      */
     function String readLine(String message) {
-		return;
+		return message;
     }   
 
     /**								
@@ -71,6 +72,7 @@ class Keyboard {
      * entered text is detected). Also handles user backspaces. 
      */
     function int readInt(String message) {
-		return;
+		var int c;
+		return c;
     }
 }
