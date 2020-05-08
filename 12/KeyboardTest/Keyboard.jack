@@ -112,7 +112,7 @@ class Keyboard {
 		while( true ) {
 			let c = Keyboard.readChar();
 			if ( c = String.newLine() ) {
-				do Output.printString(s);
+				//do Output.printString(s);
 				return s.intValue();
 			}
 			if ( c = String.backSpace() ) {
@@ -122,13 +122,13 @@ class Keyboard {
 				}
 			}
 			else {
-				if ( ((( c > 47 ) & ( c < 58 )) | c=45 ) & ( ~ endinput ) )  {
+				if ( ((( c > 47 ) & ( c < 58 )) | (c=45) ) & ( ~ endinput ) )  {
 					//do Output.printChar(c);
 					do s.appendChar(c);
 				}
 				else
 				{
-					do Output.printChar(c);
+					//do Output.printChar(c);
 					let endinput=true;
 				}
 				//do Output.printChar(c);

@@ -1,5 +1,6 @@
 function Main.main 5
 push constant 0
+not
 pop local 4
 push constant 16
 call String.new 1
@@ -160,6 +161,7 @@ label IF_FALSE0
 goto WHILE_EXP0
 label WHILE_END0
 push constant 0
+not
 pop local 4
 push constant 14
 call String.new 1

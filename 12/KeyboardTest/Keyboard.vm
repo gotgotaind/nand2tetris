@@ -140,9 +140,9 @@ push constant 58
 lt
 and
 push local 1
-or
 push constant 45
 eq
+or
 push local 3
 not
 and
@@ -155,9 +155,6 @@ call String.appendChar 2
 pop temp 0
 goto IF_END3
 label IF_FALSE3
-push local 1
-call Output.printChar 1
-pop temp 0
 push constant 0
 not
 pop local 3
